@@ -1,0 +1,31 @@
+{
+  "name": "dscvr-sdk",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsup",
+    "lint": "eslint 'src/**/*.{ts,js}'",
+    "format": "prettier --write 'src/**/*.{ts,js,json,md}'",
+    "type-check": "tsc --noEmit",
+    "prepare": "pnpm build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^8.17.0",
+    "@typescript-eslint/parser": "^8.17.0",
+    "eslint": "^9.16.0",
+    "eslint-config-prettier": "^9.1.0",
+    "prettier": "^3.4.2",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2"
+  },
+  "dependencies": {
+    "@dfinity/agent": "^2.1.3",
+    "@dfinity/candid": "^2.1.3",
+    "@dfinity/identity": "^2.1.3",
+    "@dfinity/principal": "^2.1.3"
+  }
+}

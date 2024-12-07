@@ -1,0 +1,1199 @@
+type ActionResultContent = record {
+  status : text;
+  result : opt ContentView;
+  errors : opt vec ValidationErrors;
+  message : text;
+  error_code : opt SocietyRsError;
+};
+type ActionResultGetContent = record {
+  status : text;
+  result : opt vec ContentView;
+  message : text;
+  error_code : opt SocietyRsError;
+};
+type ActionResultGetContentPaged = record {
+  status : text;
+  result : opt ContentViewPage;
+  message : text;
+  error_code : opt SocietyRsError;
+};
+type ActionResultPairPlatform = record {
+  status : text;
+  result : opt UserPlatformPair;
+  errors : opt vec ValidationErrors;
+  message : text;
+  error_code : opt SocietyRsError;
+};
+type ActionResultPortal = record {
+  status : text;
+  result : opt PortalView;
+  errors : opt vec ValidationErrors;
+  message : text;
+  error_code : opt SocietyRsError;
+};
+type ActionResultPortalRole = record {
+  status : text;
+  result : opt RoleView;
+  errors : opt vec ValidationErrors;
+  message : text;
+  error_code : opt SocietyRsError;
+};
+type ActionResultPortalSearch = record {
+  status : text;
+  result : opt PortalSearchResult;
+  errors : opt vec ValidationErrors;
+  message : text;
+};
+type ActionResultPortals = record {
+  status : text;
+  result : opt vec PortalView;
+  errors : opt vec ValidationErrors;
+  message : text;
+  error_code : opt SocietyRsError;
+};
+type ActionResultReport = record {
+  status : text;
+  result : opt ReportView;
+  errors : opt vec ValidationErrors;
+  message : text;
+  error_code : opt SocietyRsError;
+};
+type ActionResultUpdatePortalRoleOrdinal = record {
+  status : text;
+  result : opt vec RoleView;
+  errors : opt vec ValidationErrors;
+  message : text;
+  error_code : opt SocietyRsError;
+};
+type ActionResultUser = record {
+  status : text;
+  result : opt UserView;
+  errors : opt vec ValidationErrors;
+  message : text;
+  error_code : opt SocietyRsError;
+};
+type ActionResultUserSearch = record {
+  status : text;
+  result : opt UserSearchResult;
+  errors : opt vec ValidationErrors;
+  message : text;
+};
+type ActionResultUserSelf = record {
+  status : text;
+  result : opt UserSelfView;
+  errors : opt vec ValidationErrors;
+  message : text;
+  error_code : opt SocietyRsError;
+};
+type ApiNotificationType = variant {
+  CommentMention : ContentMention;
+  CommentReply : ContentReply;
+  PostReaction : Reaction;
+  PostReply : ContentReply;
+  CommentAward : ContentAward;
+  Follower;
+  PostAward : ContentAward;
+  PostMention : ContentMention;
+  CommentReaction : Reaction;
+};
+type AppGroupNotificationPayload = record {
+  ids : opt vec nat64;
+  total_notifiers : opt nat64;
+  recent_notifiers : opt vec GroupNotificationRecentNotifier;
+};
+type AppNotificationChannel = variant { App; Email; Push };
+type AppNotificationPage = record {
+  page_size : nat64;
+  notifications : vec AppNotificationPayload;
+  num_pages : nat64;
+  page : nat64;
+};
+type AppNotificationPayload = record {
+  notifier_icon_url : opt text;
+  read_at : opt nat64;
+  body : opt text;
+  notification_group : opt AppGroupNotificationPayload;
+  created_at : nat64;
+  notification_id : nat64;
+  notification_type : ApiNotificationType;
+  notifier : opt text;
+  notifier_nft : opt NFTView;
+};
+type AppNotificationSettings = record {
+  streak_reminders : vec AppNotificationChannel;
+  comments_replies : vec AppNotificationChannel;
+  awards : vec AppNotificationChannel;
+  shares_reposts : vec AppNotificationChannel;
+  mentions : vec AppNotificationChannel;
+  likes_reactions : vec AppNotificationChannel;
+  new_followers : vec AppNotificationChannel;
+};
+type AppNotificationType = variant {
+  CommentMention;
+  CommentReply;
+  PostReaction;
+  PostReply;
+  CommentAward;
+  Follower;
+  PostAward;
+  PostMention;
+  CommentReaction;
+};
+type AppReport = record {
+  reported_other : nat64;
+  rejected : nat64;
+  proceeded : nat64;
+  reported_malicious : nat64;
+};
+type AppReportView = record { url : text; report : AppReport };
+type AwardMeta = record { name : text; icon_url : text };
+type AwardView = record {
+  id : nat64;
+  cost : nat64;
+  name : text;
+  icon_url : text;
+};
+type ChainType = variant { InternetComputer; Solana };
+type ContentAction = variant {
+  ContentRemoved;
+  ContentReinstated;
+  ContentEdited : ContentEditedAction;
+  ContentDenied;
+  ContentApproved;
+  ContentReQueued;
+};
+type ContentActionFeedQuery = record {
+  page_size : nat64;
+  moderator_filter : opt vec principal;
+  action_filter : opt vec ContentActionType;
+  portal_id : nat32;
+  page : nat64;
+};
+type ContentActionFilter = variant { Moderator : vec principal };
+type ContentActionHistoryFeedResult = variant {
+  Ok : ContentActionHistoryPage;
+  Err : SocietyRsError;
+};
+type ContentActionHistoryPage = record {
+  page : nat64;
+  total_pages : nat64;
+  actions : vec ContentActionHistoryView;
+};
+type ContentActionHistoryView = record {
+  action_id : nat64;
+  action : opt ContentActionType;
+  content : ContentView;
+  moderator : opt UserView;
+  timestamp : nat64;
+};
+type ContentActionPageView = record {
+  page_size : nat64;
+  page : nat64;
+  total_pages : nat64;
+  actions : vec ContentActionView;
+};
+type ContentActionPageViewResult = variant {
+  Ok : ContentActionPageView;
+  Err : opt SocietyRsError;
+};
+type ContentActionPagedQuery = record {
+  page_size : nat64;
+  portal_id : nat64;
+  page : nat64;
+  filter : opt ContentActionFilter;
+};
+type ContentActionType = variant {
+  Reinstated;
+  Approved;
+  Denied;
+  ReQueued;
+  Removed;
+};
+type ContentActionView = record {
+  id : nat64;
+  action : opt ContentAction;
+  content : opt ContentView;
+  moderator : opt UserView;
+  timestamp : nat64;
+};
+type ContentAward = record {
+  title : text;
+  award : AwardMeta;
+  content_id : nat64;
+  root_parent_id : opt nat64;
+};
+type ContentEditPayload = record {
+  title : text;
+  body : text;
+  nsfw : bool;
+  tags : vec text;
+  comments_disabled : bool;
+};
+type ContentEditedAction = record {
+  post_edit : ContentEditPayload;
+  pre_edit : ContentEditPayload;
+};
+type ContentMention = record {
+  title : text;
+  content_id : nat64;
+  root_parent_id : opt nat64;
+};
+type ContentQuery = record {
+  max_grand_children_per_level : opt nat16;
+  content_id : nat64;
+  sort : ContentSort;
+  thread_start : nat64;
+  since : opt nat64;
+  thread_size : nat64;
+  max_grand_child_depth : opt nat16;
+};
+type ContentReaction = variant {
+  Sad;
+  Wow;
+  Care;
+  Clap;
+  Fire;
+  HaHa;
+  Like;
+  Dislike;
+  Angry;
+};
+type ContentReply = record {
+  title : text;
+  content_id : nat64;
+  root_parent_id : opt nat64;
+  comment_id : nat64;
+};
+type ContentSort = variant { OP; New; Old; Live; Default; VerifiedPfp };
+type ContentStatus = variant { Approved; Denied; Pending };
+type ContentStatusFilter = variant { Denied; Pending };
+type ContentTreeView = record {
+  id : nat64;
+  url : text;
+  upvotes : int64;
+  is_nsfw : bool;
+  status : opt ContentStatus;
+  title : text;
+  updated_at : nat64;
+  deleted : opt bool;
+  is_pinned : bool;
+  owner : UserView;
+  disable_comments : opt bool;
+  body : text;
+  owner_color : nat32;
+  lang : text;
+  perm : nat64;
+  tags : vec Tag;
+  content_type : text;
+  created_at : nat64;
+  children : vec ContentTreeView;
+  is_mod : bool;
+  parent_id : opt nat64;
+  icon_url : text;
+  reaction_counts : vec record { ContentReaction; nat64 };
+  owner_id : principal;
+  children_count : nat64;
+  downvotes : int64;
+  is_author_pinned : bool;
+  is_reactor : opt ContentReaction;
+  is_upvoter : bool;
+  owner_roles : vec nat64;
+  removed : opt bool;
+  is_downvoter : bool;
+  portal : PortalInfoView;
+};
+type ContentTreeViewPage = record {
+  page_size : nat64;
+  views : vec ContentTreeView;
+  page : nat64;
+  total_pages : nat64;
+};
+type ContentTreeViewPageResult = variant {
+  Ok : ContentTreeViewPage;
+  Err : opt SocietyRsError;
+};
+type ContentView = record {
+  id : nat64;
+  url : text;
+  upvotes : int64;
+  is_nsfw : bool;
+  status : opt ContentStatus;
+  title : text;
+  deleted : opt bool;
+  app_reports : opt vec AppReportView;
+  is_pinned : bool;
+  owner : UserView;
+  disable_comments : opt bool;
+  body : text;
+  parent_content : opt ContentView;
+  owner_color : nat32;
+  lang : text;
+  frame_interaction_friends : vec UserView;
+  perm : nat64;
+  poll : opt PollView;
+  tags : vec Tag;
+  content_type : text;
+  created_at : nat64;
+  post_awards : vec PostAwardView;
+  is_mod : bool;
+  parent_id : opt nat64;
+  icon_url : text;
+  reaction_counts : vec record { ContentReaction; nat64 };
+  owner_id : principal;
+  children_count : nat64;
+  downvotes : int64;
+  is_author_pinned : bool;
+  frame_interaction_count : nat64;
+  root_parent_content : opt ContentView;
+  relevant_children : vec ContentView;
+  is_reactor : opt ContentReaction;
+  friends : vec UserView;
+  is_upvoter : bool;
+  owner_roles : vec nat64;
+  removed : opt bool;
+  is_downvoter : bool;
+  portal : PortalInfoView;
+};
+type ContentViewPage = record {
+  page_size : nat64;
+  contents : vec ContentView;
+  page : nat64;
+  total_pages : nat64;
+};
+type ContentViewPagedResult = variant {
+  Ok : ContentViewPage;
+  Err : opt SocietyRsError;
+};
+type CreateAwardRequest = record {
+  weight : nat64;
+  cost : nat64;
+  name : text;
+  purchasable : bool;
+  icon_url : text;
+};
+type CreateContent = record {
+  url : text;
+  is_nsfw : bool;
+  title : text;
+  portal_id : opt nat64;
+  disable_comments : opt bool;
+  body : text;
+  lang : text;
+  poll : opt CreatePoll;
+  tags : vec text;
+  content_type : text;
+  parent_id : opt nat64;
+  icon_url : text;
+};
+type CreatePoll = record { days : nat64; kind : PollKind; choices : vec text };
+type CreatePortal = record {
+  is_nsfw : bool;
+  name : text;
+  slug : text;
+  description : text;
+  icon_url : text;
+};
+type CreatePortalRole = record {
+  permissions : nat64;
+  name : text;
+  color : nat32;
+  ordinal : nat64;
+  icon_url : text;
+};
+type CreditInfo = record {
+  payload_id : text;
+  award_reason : CurrencyAwardReason;
+  payload_version : nat8;
+  payload : blob;
+};
+type CreditTransactionRequest = record {
+  payload_id : text;
+  award_reason : opt CurrencyAwardReason;
+  user_id : principal;
+  payload_version : nat8;
+  amount : nat64;
+  payload : blob;
+};
+type CurrencyAwardReason = variant { SpherePay };
+type CurrencyTransaction = record {
+  request_id : nat64;
+  user_id : principal;
+  tx_type : CurrencyTransactionType;
+  amount : nat64;
+};
+type CurrencyTransactionType = variant {
+  Debit : DebitInfo;
+  Credit : CreditInfo;
+};
+type DebitInfo = record { reason : DebitReason };
+type DebitReason = variant { PostBoost };
+type EmailMessagingSettings = record { marketing : bool };
+type EmailVerificationEmptyResult = variant {
+  Ok;
+  Err : opt EmailVerificationError;
+};
+type EmailVerificationError = variant {
+  SocietyRsError : SocietyRsError;
+  TokenError : TokenError;
+  EmailNotSet;
+  EmailAlreadyVerified;
+};
+type EmptyResult = variant { Ok; Err : text };
+type EmptySocietyRsResult = variant { Ok; Err : opt SocietyRsError };
+type EncryptionError = variant { NonceError; EncryptionError; DecryptionError };
+type ExplorePortalSort = variant {
+  NameAscending;
+  NameDescending;
+  MemberCountAscending;
+  MemberCountDescending;
+};
+type GetPortalMemberPage = record {
+  members : vec MemberListItemView;
+  page : nat64;
+  total_members : nat64;
+  pages : nat64;
+};
+type GetPortalMemberV2Result = variant {
+  Ok : GetPortalMemberPage;
+  Err : opt SocietyRsError;
+};
+type GroupAppNotificationType = variant {
+  CommentReply;
+  PostReaction;
+  PostReply;
+  CommentReaction;
+};
+type GroupNotificationRecentNotifier = record {
+  nft : opt NFTView;
+  name : opt text;
+  icon_url : opt text;
+};
+type Identity = variant {
+  Email : IdentityEmail;
+  OAuth : IdentityOAuth;
+  Wallet : IdentityWallet;
+  Username : text;
+};
+type IdentityEmail = record {
+  verified : bool;
+  provider : opt text;
+  email : text;
+};
+type IdentityOAuth = variant { WorldCoin : text };
+type IdentityWallet = record {
+  key : blob;
+  networks : vec opt IdentityWalletNetworkType;
+  chain : opt IdentityWalletChainType;
+  kind : opt IdentityWalletType;
+};
+type IdentityWalletChainType = variant { Evm; Solana; Bitcoin };
+type IdentityWalletNetworkType = variant { Ethereum; Solana; Bitcoin; Polygon };
+type IdentityWalletType = variant {
+  Metamask;
+  Sollet;
+  SolletExtension;
+  Trustwallet;
+  Coinbase;
+  Phantom;
+  Solflare;
+  Backpack;
+};
+type InternetComputerNFT = record { nft_id : text; canister_id : principal };
+type Link = record { href : text };
+type MemberFilterOrder = variant { Descending; Ascending };
+type MemberKind = variant { Left; Approved; Banned; Kicked; Pending };
+type MemberListItemView = record {
+  id : nat64;
+  status : MemberKind;
+  user : UserListItemView;
+  created_at : nat64;
+  user_id : principal;
+  roles : vec RoleListItemView;
+};
+type MemberListWalletView = record {
+  id : nat64;
+  status : MemberKind;
+  user : UserListWalletView;
+  created_at : nat64;
+  user_id : principal;
+  roles : vec RoleListMicroItemView;
+};
+type MemberSearchResult = record {
+  id : principal;
+  username : text;
+  display_nft : opt NFTView;
+  rights : nat64;
+};
+type MemberView = record {
+  id : nat64;
+  status : MemberKind;
+  portal_id : nat64;
+  user : UserListItemView;
+  created_at : nat64;
+  user_id : principal;
+  roles : vec RoleView;
+};
+type MetaType = variant {
+  Image : text;
+  Model : text;
+  Audio : text;
+  Other : text;
+  Video : text;
+};
+type MultiChainNFTRequest = record {
+  meta_type : opt MetaType;
+  nft_id : opt text;
+  token_id : opt text;
+  chain : opt NFTChainType;
+  last_verified : nat64;
+  contract_address : text;
+};
+type MultiChainUpdate = record {
+  nft : MultiChainNFTRequest;
+  owner : opt principal;
+};
+type MultiChainUpdateResponse = variant { Ok; Err : NFTConversionError };
+type NFT = record {
+  id : nat64;
+  kind : NFTKind;
+  meta : text;
+  created_at : nat64;
+};
+type NFTChainType = variant {
+  InternetComputer;
+  Ethereum;
+  Solana;
+  Polygon;
+  Optimism;
+  Arbitrum;
+};
+type NFTConversionError = variant {
+  MissingChainType;
+  InvalidChainType : text;
+  MissingMetaType;
+};
+type NFTKind = record { nft_id : text; canister_id : principal };
+type NFTKindV2 = variant {
+  InternetComputer : InternetComputerNFT;
+  MultiChain : MultiChainNFTRequest;
+};
+type NFTUpdateView = record { kind : opt NFTKindV2; meta : opt text };
+type NFTView = record {
+  chain : opt NFTChainType;
+  meta : text;
+  is_owner : bool;
+};
+type NonceDetail = record { app_id : text; amount : nat64 };
+type NonceDetailResult = variant { Ok : NonceDetail; Err : opt SocietyRsError };
+type NotificationPageQuery = record {
+  include_types : opt vec AppNotificationType;
+  page_size : nat64;
+  page : nat64;
+  grouping_enabled : opt bool;
+};
+type NotificationResult = variant { Ok : UserNotifications; Err : text };
+type PagedQuery = record {
+  page_size : nat64;
+  lang : text;
+  page : nat64;
+  sort : Sort;
+  "query" : opt text;
+  filter : text;
+  chain_filter : opt ChainType;
+  max_age : opt nat64;
+};
+type PersonalizedFeedV1Parameters = record {
+  max_comment_depth : nat64;
+  upvote_weight : float32;
+  include_top_users : opt bool;
+  following_upvote_weight : float32;
+  following_upvote_degree_penalty : float32;
+  award_age_multiplier : opt float32;
+  profile_posts_weight : opt float32;
+  following_comment_degree_penalty : float32;
+  following_comment_weight : float32;
+  include_portals : bool;
+  freshness_weight : opt float32;
+  relevant_comment_count : nat32;
+  portal_admin_posts_weight : opt float32;
+  max_follower_degrees : nat64;
+  show_caller_posts : opt bool;
+  award_upvote_multiplier : opt nat64;
+};
+type PersonalizedFeedV1Query = record {
+  parameters : PersonalizedFeedV1Parameters;
+  "query" : PagedQuery;
+};
+type PollChoiceView = record {
+  id : nat64;
+  "text" : text;
+  ordinal : nat64;
+  total_votes : nat64;
+};
+type PollKind = variant { NFT; Text; Traditional; Quadratic };
+type PollView = record {
+  id : nat64;
+  is_public : bool;
+  title : text;
+  cost : nat64;
+  content_id : nat64;
+  kind : PollKind;
+  vote_choice_ids : vec nat64;
+  created_at : nat64;
+  voting_tokens : nat64;
+  total_votes : nat64;
+  choices : vec PollChoiceView;
+  expires_at : nat64;
+};
+type PortalHiglights = record {
+  ordinals : vec UserPortalHighlight;
+  portals : vec PortalView;
+};
+type PortalInfo = record {
+  cover_photo : opt text;
+  links : vec Link;
+  rules : opt vec PortalRule;
+};
+type PortalInfoView = record {
+  id : nat64;
+  is_nsfw : bool;
+  owner : opt UserView;
+  name : text;
+  perm : opt nat64;
+  slug : text;
+  icon_url : text;
+  portal_type : PortalType;
+};
+type PortalInvite = record { slug : text; referral_code : text };
+type PortalMemberAddResult = variant { Ok : MemberListItemView; Err : text };
+type PortalMemberQuery = record {
+  filter_order : opt MemberFilterOrder;
+  includes_roles : bool;
+  page_size : nat64;
+  role_ids : vec nat64;
+  portal_id : nat64;
+  username_filter : opt text;
+  page_start : nat64;
+};
+type PortalMemberView = record { member : MemberView; portal : PortalView };
+type PortalRule = record { desc : text; name : text };
+type PortalSearchQuery = record {
+  sort_by : opt PortalSortBy;
+  page_size : nat64;
+  page : nat64;
+  "query" : text;
+  chain_filter : opt ChainType;
+  sort_direction : opt SortDirection;
+};
+type PortalSearchResult = record {
+  page_size : nat64;
+  page : nat64;
+  total_pages : nat64;
+  items : vec PortalView;
+};
+type PortalSortBy = variant { MemberCount; Name; Levenshtein; ContentCount };
+type PortalType = variant { Portal; User };
+type PortalView = record {
+  id : nat64;
+  is_following : bool;
+  is_highlighted : bool;
+  is_nsfw : bool;
+  owner : UserView;
+  info : opt PortalInfo;
+  name : text;
+  perm : nat64;
+  slug : text;
+  description : text;
+  created_at : nat64;
+  is_mod : bool;
+  icon_url : text;
+  portal_type : opt PortalType;
+  owner_id : principal;
+  member_count : nat64;
+  content_count : nat64;
+  requires_phone : bool;
+};
+type PortalViewPaged = record {
+  page_size : nat64;
+  views : vec PortalView;
+  page : nat64;
+  total_pages : nat64;
+};
+type PortalViewPagedQuery = record {
+  page_size : nat64;
+  page : nat64;
+  sort : ExplorePortalSort;
+  highlighted : bool;
+};
+type PostAwardView = record { award_view : AwardView; count : nat64 };
+type PostQueueAction = variant { Approve; Deny };
+type PostQueueActionResult = variant {
+  Ok : ContentView;
+  Err : opt SocietyRsError;
+};
+type PostQueuePagedQuery = record {
+  page_size : nat64;
+  portal_id : nat64;
+  status_filter : opt ContentStatusFilter;
+  page : nat64;
+};
+type ProcessedNonceFilter = variant {
+  CreatedOnOrAfter : nat64;
+  Unprocessed;
+  ProcessedOnOrAfter : nat64;
+};
+type Reaction = record {
+  title : text;
+  content_id : nat64;
+  root_parent_id : opt nat64;
+  reaction : ContentReaction;
+};
+type ReadNotificationsResult = variant { Ok : vec nat64; Err : text };
+type ReferralResult = variant { Ok : text; Err : text };
+type RegisterNonceResult = variant { Ok : text; Err : opt SocietyRsError };
+type ReportView = record {
+  id : nat64;
+  read_at : nat64;
+  action : text;
+  content : ContentView;
+  actor : opt UserView;
+  report_type : text;
+  content_id : nat64;
+  actor_id : principal;
+  created_at : nat64;
+  message : text;
+  actioned_at : nat64;
+  reporter_id : principal;
+  reader_id : principal;
+  reporter : UserView;
+  reader : opt UserView;
+};
+type ReverseContentActionResult = variant {
+  Ok : ContentActionView;
+  Err : opt SocietyRsError;
+};
+type RoleKind = variant { Default; Custom; Everyone };
+type RoleListItemView = record {
+  id : nat64;
+  kind : RoleKind;
+  name : text;
+  color : nat32;
+  ordinal : nat64;
+};
+type RoleListMicroItemView = record { id : nat64; name : text };
+type RoleView = record {
+  id : nat64;
+  permissions : nat64;
+  kind : RoleKind;
+  name : text;
+  color : nat32;
+  ordinal : nat64;
+  icon_url : text;
+  member_count : nat64;
+  is_locked : bool;
+};
+type SetUserSettingsResult = variant { Ok : UserSettingsView; Err : text };
+type SocialProfile = variant {
+  Pinterest : text;
+  Reddit : text;
+  Website : text;
+  TikTok : text;
+  Twitch : text;
+  Facebook : text;
+  YouTube : text;
+  Spotify : text;
+  Discord : text;
+  OpenChat : text;
+  Telegram : text;
+  Vimeo : text;
+  LinkedIn : text;
+  Instagram : text;
+  Twitter : text;
+};
+type SocialProfileDeprecated = variant {
+  Website : text;
+  TikTok : text;
+  Twitch : text;
+  Facebook : text;
+  YouTube : text;
+  Discord : text;
+  OpenChat : text;
+  Telegram : text;
+  Instagram : text;
+  Twitter : text;
+};
+type SocietyRsError = variant {
+  NotFound : text;
+  Unauthorized : text;
+  InternalError : text;
+  BadRequest : text;
+  InsufficientFunds : text;
+};
+type Sort = variant { Hot; New; Top };
+type SortDirection = variant { Descending; Ascending };
+type StringResult = variant { Ok : text; Err : opt SocietyRsError };
+type Tag = record {
+  id : nat64;
+  total : nat64;
+  name : text;
+  is_archived : bool;
+};
+type TokenError = variant {
+  TokenGenerationError;
+  EncryptionError : EncryptionError;
+  TokenNotFound : text;
+  VerificationFailed;
+  TokenExpired;
+};
+type UpdateAwardRequest = record {
+  id : nat64;
+  weight : nat64;
+  cost : nat64;
+  name : text;
+  purchasable : bool;
+  icon_url : text;
+};
+type UpdatePoll = record {
+  days : nat64;
+  kind : PollKind;
+  choices : vec PollChoiceView;
+};
+type UpdatePortal = record { id : nat64; description : text };
+type UpdatePortalIcon = record { id : nat64; icon_url : text };
+type UpdatePortalRole = record {
+  id : nat64;
+  permissions : nat64;
+  name : text;
+  color : nat32;
+  ordinal : nat64;
+  icon_url : text;
+};
+type UpdateUserEmail = record { email : opt text };
+type UpdateUserProfileIcon = variant { Nft : NFTUpdateView; Url : text };
+type UpdateUserProfileV2 = record { bio : text };
+type UpdateUsername = record { username : text };
+type UserBan = record {
+  id : nat64;
+  portal_id : nat64;
+  created_at : nat64;
+  user_id : principal;
+  banner_id : principal;
+  expires_at : nat64;
+  reason : text;
+};
+type UserFollowPaged = record {
+  page_size : nat64;
+  page : nat64;
+  total_pages : nat64;
+  follow_status : vec record { principal; bool };
+  users : vec UserView;
+};
+type UserListItemView = record {
+  id : principal;
+  user_type : nat64;
+  username : text;
+  display_nft : opt NFTView;
+  rights : nat64;
+  created_at : nat64;
+  icon_url : text;
+};
+type UserListPaged = record { page_size : nat64; page : nat64 };
+type UserListWalletView = record {
+  id : principal;
+  user_type : nat64;
+  username : text;
+  wallets : vec UserWallet;
+};
+type UserNotifications = record { notification_page : AppNotificationPage };
+type UserPlatformController = record {
+  kind : UserPlatformPairKind;
+  created_at : nat64;
+  controller_id : principal;
+};
+type UserPlatformPair = record {
+  id : nat64;
+  platform_meta : text;
+  kind : UserPlatformPairKind;
+  created_at : nat64;
+  platform_user_id : text;
+  is_paired : bool;
+  platform_username : text;
+};
+type UserPlatformPairKind = variant { Discord; OpenChat; Telegram; Twitter };
+type UserPlatformPairListItem = record {
+  platform_meta : text;
+  user : UserListWalletView;
+  user_id : principal;
+  platform_user_id : text;
+  platform_username : text;
+};
+type UserPortalHighlight = record { portal_id : nat64; ordinal : nat64 };
+type UserSearchQuery = record {
+  sort_by : opt UserSortBy;
+  page_size : nat64;
+  page : nat64;
+  "query" : text;
+  chain_filter : opt ChainType;
+  sort_direction : opt SortDirection;
+};
+type UserSearchResult = record {
+  page_size : nat64;
+  page : nat64;
+  total_pages : nat64;
+  items : vec UserView;
+};
+type UserSelfView = record {
+  id : principal;
+  bio : text;
+  igc : opt nat64;
+  is_phone_verified : bool;
+  user_type : nat64;
+  username : text;
+  is_provisional : bool;
+  display_nft : opt NFTView;
+  num_posts : nat64;
+  cover_photo : opt text;
+  rights : nat64;
+  referrals : nat64;
+  created_at : nat64;
+  active_streak : nat64;
+  email : opt text;
+  icon_url : text;
+  has_membership : bool;
+  user_settings : UserSettingsView;
+  identity : opt Identity;
+  email_verified : bool;
+  followers : nat64;
+  following : nat64;
+  onboarding_state : text;
+  social_presence : opt vec SocialProfileDeprecated;
+  social_presence_2 : opt vec opt SocialProfile;
+};
+type UserSettingsView = record {
+  preferred_chain : opt ChainType;
+  app_notification : opt AppNotificationSettings;
+  blockchains : vec text;
+  preferred_language : text;
+  interests : vec text;
+  user_id : principal;
+  allow_nsfw : bool;
+  use_cases : vec text;
+  email_messaging : opt EmailMessagingSettings;
+  app_notification_grouping : opt vec GroupAppNotificationType;
+};
+type UserSortBy = variant {
+  PointCount;
+  Name;
+  ActiveStreak;
+  FollowingCount;
+  Levenshtein;
+};
+type UserView = record {
+  id : principal;
+  bio : text;
+  is_phone_verified : bool;
+  user_type : nat64;
+  username : text;
+  display_nft : opt NFTView;
+  num_posts : nat64;
+  cover_photo : opt text;
+  rights : nat64;
+  created_at : nat64;
+  active_streak : nat64;
+  icon_url : text;
+  followers : nat64;
+  following : nat64;
+  social_presence : opt vec SocialProfileDeprecated;
+  social_presence_2 : opt vec opt SocialProfile;
+};
+type UserWallet = record {
+  kind : UserWalletKind;
+  created_at : nat64;
+  is_paired : bool;
+  wallet_id : principal;
+};
+type UserWalletKind = variant { Stoic; InfinitySwap; Plug; Origyn; Earth };
+type ValidationErrors = record { field : text; errors : vec text };
+service : {
+  accept_portal_invite : (PortalInvite) -> (ActionResultPortal) query;
+  accept_user_invite : (text) -> (ActionResultUser) query;
+  add_member_role : (nat64, vec record { nat64; nat64 }) -> (
+      vec MemberView,
+    ) query;
+  add_platform_controller : (UserPlatformPairKind, principal) -> (
+      vec UserPlatformController,
+    ) query;
+  add_portal_role : (nat64, CreatePortalRole) -> (ActionResultPortalRole) query;
+  approve_all_pending_posts : (nat64) -> (EmptySocietyRsResult) query;
+  approve_deny_pending_post : (nat64, opt PostQueueAction) -> (
+      PostQueueActionResult,
+    ) query;
+  award_post : (nat64, nat64) -> (PostQueueActionResult) query;
+  block_user_toggle : (principal) -> (opt bool) query;
+  content_nsfw_set : (nat64, bool) -> (ActionResultContent) query;
+  content_pin_set : (nat64, bool) -> (ActionResultContent) query;
+  content_poll_quadratic_vote : (nat64, vec record { nat64; nat64 }) -> (
+      opt PollView,
+    ) query;
+  content_poll_vote : (nat64, nat64) -> (opt PollView) query;
+  create_content : (CreateContent) -> (ActionResultContent) query;
+  create_platform_pairing : (UserPlatformPairKind) -> (
+      opt UserPlatformPair,
+    ) query;
+  create_portal : (CreatePortal) -> (ActionResultPortal) query;
+  delete_content : (nat64) -> (ActionResultContent) query;
+  delete_portal_role : (nat64) -> (ActionResultPortalRole) query;
+  follow_portal_toggle : (nat64) -> (ActionResultPortal) query;
+  follow_user : (principal) -> (ActionResultUser) query;
+  follow_user_toggle : (principal) -> (ActionResultUser) query;
+  get_assignable_portal_roles : (nat64) -> (
+      opt record { MemberView; vec RoleView },
+    ) query;
+  get_content : (nat64) -> (ActionResultContent) query;
+  get_content_children : (ContentQuery) -> (vec ContentTreeView) query;
+  get_content_children_page : (ContentQuery) -> (
+      ContentTreeViewPageResult,
+    ) query;
+  get_content_since : (nat64, nat64) -> (vec ContentTreeView) query;
+  get_content_view_counts : (vec nat64) -> (vec record { nat64; nat64 }) query;
+  get_identity_for_principal : (principal) -> (opt Identity) query;
+  get_nft_pfps : (opt bool, opt NFTChainType) -> (vec MultiChainUpdate) query;
+  get_notification_page : (NotificationPageQuery) -> (NotificationResult) query;
+  get_own_id : () -> (principal) query;
+  get_paired_platforms : () -> (vec UserPlatformPair) query;
+  get_paired_platforms_by_user : (principal) -> (vec UserPlatformPair) query;
+  get_paired_user_by_platform : (UserPlatformPairKind) -> (
+      vec UserPlatformPairListItem,
+    ) query;
+  get_paired_wallets : () -> (vec UserWallet) query;
+  get_platform_controllers : () -> (vec UserPlatformController) query;
+  get_platform_pair_code : (UserPlatformPairKind) -> (opt text) query;
+  get_portal : (text) -> (ActionResultPortal) query;
+  get_portal_content : (text, PagedQuery) -> (
+      ActionResultGetContentPaged,
+    ) query;
+  get_portal_content_action_feed : (ContentActionFeedQuery) -> (
+      ContentActionHistoryFeedResult,
+    ) query;
+  get_portal_content_action_feed_page : (ContentActionPagedQuery) -> (
+      ContentActionPageViewResult,
+    ) query;
+  get_portal_info : (nat64) -> (opt PortalInfo) query;
+  get_portal_member_memos : (nat64, nat64) -> (vec text) query;
+  get_portal_member_wallets : (nat64) -> (vec MemberListWalletView) query;
+  get_portal_members : (PortalMemberQuery) -> (vec MemberListItemView) query;
+  get_portal_members_by_status : (nat64, MemberKind) -> (
+      vec MemberListItemView,
+    ) query;
+  get_portal_members_v2 : (PortalMemberQuery) -> (
+      GetPortalMemberV2Result,
+    ) query;
+  get_portal_roles : (nat64) -> (vec RoleView) query;
+  get_portals : (vec text) -> (ActionResultPortals) query;
+  get_post_queue_feed_page : (PostQueuePagedQuery) -> (
+      ContentViewPagedResult,
+    ) query;
+  get_principal_for_user_name : (text) -> (opt principal) query;
+  get_role_members : (nat64) -> (vec MemberListItemView) query;
+  get_self : () -> (ActionResultUserSelf) query;
+  get_self_portals : () -> (vec PortalView) query;
+  get_user : (text) -> (ActionResultUser) query;
+  get_user_blocked : (UserListPaged) -> (UserFollowPaged) query;
+  get_user_by_principal : (principal) -> (ActionResultUser) query;
+  get_user_content : (text, PagedQuery) -> (ActionResultGetContentPaged) query;
+  get_user_followers : (text, UserListPaged) -> (UserFollowPaged) query;
+  get_user_following : (text, UserListPaged) -> (UserFollowPaged) query;
+  get_user_follows : () -> (vec PortalView) query;
+  get_user_portal_roles : (nat64, principal) -> (opt PortalMemberView) query;
+  get_user_portals : (principal) -> (vec PortalView) query;
+  get_user_referral_code : () -> (ReferralResult) query;
+  is_phone_paried : () -> (variant { Ok : bool; Err : text }) query;
+  is_phone_verified : (text) -> (variant { Ok : bool; Err : text }) query;
+  is_user_following : (principal) -> (bool) query;
+  join_portal : (nat64) -> (ActionResultPortal) query;
+  leave_portal : (nat64) -> (ActionResultPortal) query;
+  list_content : (PagedQuery) -> (ContentViewPage) query;
+  list_portals : (PortalViewPagedQuery) -> (PortalViewPaged) query;
+  mark_all_notifications_read : () -> (EmptyResult) query;
+  mark_notifications_read : (vec nat64) -> (ReadNotificationsResult) query;
+  member_search : (text) -> (vec MemberSearchResult) query;
+  pair_platform : (UserPlatformPairKind, principal, text, text, text, text) -> (
+      ActionResultPairPlatform,
+    ) query;
+  personalized_feed_v1 : (PersonalizedFeedV1Query) -> (
+      variant { Ok : ContentViewPage; Err : text },
+    ) query;
+  pin_user_content : (nat64, bool) -> (EmptyResult) query;
+  portal_member_add : (nat64, principal) -> (PortalMemberAddResult) query;
+  portal_nsfw_toggle : (nat64) -> (ActionResultPortal) query;
+  portal_requires_phone : (nat64, bool) -> (ActionResultPortal) query;
+  react_to_content : (nat64, opt ContentReaction) -> (
+      ActionResultContent,
+    ) query;
+  read_notifications : (vec nat64) -> (ReadNotificationsResult) query;
+  remove_content : (nat64) -> (ActionResultContent) query;
+  remove_follower : (principal) -> (ActionResultUser) query;
+  remove_member_role : (nat64, vec record { nat64; nat64 }) -> (
+      vec MemberView,
+    ) query;
+  remove_portal : (nat64) -> () query;
+  reverse_content_action : (nat64) -> (ReverseContentActionResult) query;
+  reverse_portal_content_action : (nat64) -> (EmptyResult) query;
+  search_portals : (PortalSearchQuery) -> (ActionResultPortalSearch) query;
+  search_tags : (text) -> (vec Tag) query;
+  search_users : (UserSearchQuery) -> (ActionResultUserSearch) query;
+  set_action : (nat64, text) -> (ActionResultReport) query;
+  set_nft_pfps : (vec MultiChainUpdate) -> (MultiChainUpdateResponse) query;
+  set_portal_members_status : (nat64, nat64, MemberKind, text) -> (
+      opt MemberListItemView,
+    ) query;
+  set_read : (nat64) -> (vec ActionResultReport) query;
+  unfollow_user : (principal) -> (ActionResultUser) query;
+  unpair_phone : () -> (variant { Ok : bool; Err : text }) query;
+  unpair_platform : (UserPlatformPairKind) -> (vec UserPlatformPair) query;
+  unpair_wallet : (UserWalletKind) -> () query;
+  unverify_phone : (text) -> (variant { Ok : bool; Err : text }) query;
+  update_content : (
+      nat64,
+      text,
+      vec text,
+      opt bool,
+      opt bool,
+      opt UpdatePoll,
+    ) -> (ActionResultContent) query;
+  update_portal : (UpdatePortal) -> (ActionResultPortal) query;
+  update_portal_icon : (UpdatePortalIcon) -> (ActionResultPortal) query;
+  update_portal_info_cover_photo : (nat64, opt text) -> (
+      ActionResultPortal,
+    ) query;
+  update_portal_info_links : (nat64, vec Link) -> (ActionResultPortal) query;
+  update_portal_info_rules : (nat64, opt vec PortalRule) -> (
+      ActionResultPortal,
+    ) query;
+  update_portal_pinned_posts : (nat64, vec nat64) -> (
+      EmptySocietyRsResult,
+    ) query;
+  update_portal_role : (UpdatePortalRole) -> (ActionResultPortalRole) query;
+  update_portal_role_ordinals : (nat64, vec record { nat64; nat64 }) -> (
+      ActionResultUpdatePortalRoleOrdinal,
+    ) query;
+  update_social_presence : (vec SocialProfile) -> (ActionResultUserSelf) query;
+  update_user_cover_photo : (opt text) -> (ActionResultUserSelf) query;
+  update_user_email : (UpdateUserEmail) -> (ActionResultUserSelf) query;
+  update_user_pinned_posts : (vec nat64) -> (EmptySocietyRsResult) query;
+  update_username : (UpdateUsername) -> (ActionResultUserSelf) query;
+  update_wallet_type : (principal, IdentityWalletType) -> () query;
+  user_search : (text) -> (vec UserListItemView) query;
+  user_set_profile_icon : (opt UpdateUserProfileIcon) -> (
+      opt UserSelfView,
+    ) query;
+  user_set_profile_v2 : (UpdateUserProfileV2) -> (opt UserSelfView) query;
+  user_set_settings_v2 : (UserSettingsView) -> (SetUserSettingsResult) query;
+  user_wallet_pair_dscvr : (principal) -> (opt UserWallet) query;
+  user_wallet_pair_foreign : (UserWalletKind, principal) -> (
+      opt UserWallet,
+    ) query;
+  verify_email_token : (text) -> (EmailVerificationEmptyResult) query;
+  verify_phone : (principal, text) -> (variant { Ok : bool; Err : text }) query;
+  vote_content : (nat64, int64) -> (ActionResultContent) query;
+}
