@@ -48,6 +48,11 @@ export class ContentModule {
     return convertToResult(queryResult);
   };
 
+  setNSFW = async (contentId: bigint, isNSFW: boolean) => {
+    const queryResult = await this.actor.content_nsfw_set(contentId, isNSFW);
+    return convertToResult(queryResult);
+  }
+
   reactToContent = async (contentId: bigint, reaction?: ContentReaction) => {
     const queryResult = await this.actor.react_to_content(
       contentId,

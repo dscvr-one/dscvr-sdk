@@ -110,4 +110,25 @@ export class PortalModule {
     }
     return convertToSuccessResult('Approved' in results[0].member.status);
   };
+
+  addMemberRole = async (portalId: bigint, memberId: bigint, roleId: bigint) => {
+    const queryResult = await this.actor.add_member_role(portalId, [[memberId, roleId]]);
+    return convertToSuccessResult(queryResult);
+  }
+
+  addMemberRoleMany = async (portalId: bigint, memberRoles: [[bigint, bigint]]) => {
+    const queryResult = await this.actor.add_member_role(portalId, memberRoles);
+    return convertToSuccessResult(queryResult);
+  }
+
+  removeMemberRole = async (portalId: bigint, memberId: bigint, roleId: bigint) => {
+    const queryResult = await this.actor.remove_member_role(portalId, [[memberId, roleId]]);
+    return convertToSuccessResult(queryResult);
+  }
+
+  removeMemberRoleMany = async (portalId: bigint, memberRoles: [[bigint, bigint]]) => {
+    const queryResult = await this.actor.remove_member_role(portalId, memberRoles);
+    return convertToSuccessResult(queryResult);
+  } 
+
 }
