@@ -3,9 +3,8 @@ import {
   ContentReaction,
   CreateContent,
 } from '../idl/dscvr.did';
-import {
-  convertToResult,
-} from '../utils';
+import { Reaction } from '../types';
+import { convertToResult } from '../utils';
 
 export class ContentModule {
   constructor(public actor: BackendActor) {}
@@ -51,12 +50,12 @@ export class ContentModule {
   setNSFW = async (contentId: bigint, isNSFW: boolean) => {
     const queryResult = await this.actor.content_nsfw_set(contentId, isNSFW);
     return convertToResult(queryResult);
-  }
+  };
 
-  reactToContent = async (contentId: bigint, reaction?: ContentReaction) => {
+  reactToContent = async (contentId: bigint, reaction?: Reaction) => {
     const queryResult = await this.actor.react_to_content(
       contentId,
-      reaction ? [reaction] : [],
+      reaction ? [{ [reaction]: null } as ContentReaction] : [],
     );
     return convertToResult(queryResult);
   };

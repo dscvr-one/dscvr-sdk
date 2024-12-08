@@ -1,4 +1,5 @@
-import { SocietyRsError, ValidationErrors } from "./idl/dscvr.did";
+import { ContentReaction, SocietyRsError, ValidationErrors } from "./idl/dscvr.did";
+import { TransformKeys } from "./utils";
 
 export const SuccessStatus = 'happy';
 export const ErrorStatus = 'sad';
@@ -21,3 +22,6 @@ export interface ErrorResult {
   message: string;
   code?: SocietyRsError;
 }
+
+// override types from did
+export type Reaction = TransformKeys<ContentReaction>;

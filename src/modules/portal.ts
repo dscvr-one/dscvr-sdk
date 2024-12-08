@@ -130,5 +130,4 @@ export class PortalModule {
     const queryResult = await this.actor.remove_member_role(portalId, memberRoles);
     return convertToSuccessResult(queryResult);
   } 
-
 }

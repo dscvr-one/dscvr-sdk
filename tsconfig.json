@@ -10,7 +10,9 @@
     "declarationMap": true,
     "allowJs": true,
     "outDir": "dist",
-    "sourceMap": true
+    "sourceMap": true,
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
   },
   "include": ["src"],
   "exclude": ["node_modules", "dist"]

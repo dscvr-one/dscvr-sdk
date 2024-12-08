@@ -9,6 +9,10 @@ export type TransformOptional<T> = {
   [K in keyof T]: T[K] extends [] | [infer U] ? U | undefined : T[K];
 };
 
+export const isKind = (kind: string, obj: any): boolean => {
+  return kind in obj;
+};
+
 export type TransformKeys<T> = T extends { [K in keyof T]: null } ? keyof T : never;
 
 export function convertToResult<T>(

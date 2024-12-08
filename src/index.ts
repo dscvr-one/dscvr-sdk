@@ -1,4 +1,5 @@
-export * from './idl/dscvr.did';
+export * from './idl/dscvr.did.ts';
 export * from './dscvr';
-export * from './types';
+export { Reaction, ErrorResult, Success, Failure } from './types';
 export * from './utils';
+export { Principal } from '@dfinity/principal';
