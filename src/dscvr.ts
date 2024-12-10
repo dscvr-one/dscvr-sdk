@@ -5,11 +5,27 @@ import { UserModule } from './modules/user';
 import { ContentModule } from './modules/content';
 import { PortalModule } from './modules/portal';
 
+/**
+ * Represents the DSCVRProtocol class.
+ * This class provides access to various modules and functionalities of the DSCVR SDK.
+ */
 export class DSCVRProtocol {
   public identity: Identity;
   public actor: BackendActor;
+
+  /**
+   * Represents the user module.
+   */
   public user: UserModule;
+
+  /**
+   * Represents the content module.
+   */
   public content: ContentModule;
+  
+  /**
+   * Represents the portal module.
+   */
   public portal: PortalModule;
 
   constructor(
