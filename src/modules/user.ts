@@ -5,6 +5,8 @@ import {
   SocialProfile,
   UserFollowPaged,
   UserListPaged,
+  UserSearchQuery,
+  UserSearchResult,
   UserSelfView,
   UserView,
 } from '../idl/dscvr.did';
@@ -292,4 +294,14 @@ export class UserModule {
     return convertToSuccessResult(queryResult[0]);
   };
 
+  /**
+   * Finds a user based on the provided search query.
+   * 
+   * @param {UserSearchQuery} query - The search query used to find the user.
+   * @returns {Promise<Result<UserSearchResult>>} A promise that resolves to a Result containing the search result.
+   */
+  findUser = async (query: UserSearchQuery): Promise<Result<UserSearchResult>> => {
+    const queryResult = await this.actor.search_users(query);
+    return convertToResult(queryResult);
+  }
 }

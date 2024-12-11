@@ -7,8 +7,6 @@ The DSCVR SDK is a TypeScript library designed to facilitate interactions with t
 - Users
 - Content
 - Portals
-- Search
-- Feeds
 
 ## Installation
 

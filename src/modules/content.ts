@@ -4,7 +4,9 @@ import {
   ContentReaction,
   ContentTreeViewPage,
   ContentView,
+  ContentViewPage,
   CreateContent,
+  PagedQuery,
 } from '../idl/dscvr.did';
 import { Reaction, Result } from '../types';
 import {
@@ -156,5 +158,20 @@ export class ContentModule {
       { NotFound: 'Content not found' },
       [],
     )
+  };
+
+  /**
+   * Retrieves the user's content based on the provided username and query parameters.
+   * 
+   * @param {string} username - The username of the user whose content is being retrieved.
+   * @param {PagedQuery} query - The query parameters for pagination and filtering.
+   * @returns {Promise<Result<ContentViewPage>>} A promise that resolves to a Result object containing the user's content.
+   */
+  getUserContent = async (
+    username: string,
+    query: PagedQuery,
+  ): Promise<Result<ContentViewPage>> => {
+    const queryResult = await this.actor.get_user_content(username, query);
+    return convertToResult(queryResult);
   };
 }

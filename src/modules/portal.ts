@@ -1,10 +1,12 @@
 import { Principal } from '@dfinity/principal';
 import {
   _SERVICE as BackendActor,
+  ContentView,
   ContentViewPage,
   CreatePortal,
   CreatePortalRole,
   GetPortalMemberV2Result,
+  MemberKind,
   MemberListItemView,
   MemberView,
   PagedQuery,
@@ -12,6 +14,8 @@ import {
   PortalMemberQuery,
   PortalMemberView,
   PortalRule,
+  PortalSearchQuery,
+  PortalSearchResult,
   PortalView,
   RoleView,
   UpdatePortal,
@@ -166,6 +170,17 @@ export class PortalModule {
     const queryResult = await this.actor.leave_portal(portalId);
     return convertToResult(queryResult);
   };
+
+  /**
+   * Removes the content with the specified contentId in a portal
+   * 
+   * @param {bigint} contentId - The ID of the content to be removed.
+   * @returns {Promise<Result<ContentView>>} A promise that resolves to a Result containing the removed ContentView.
+   */
+  removeContent = async (contentId: bigint): Promise<Result<ContentView>> => {
+    const queryResult = await this.actor.remove_content(contentId);
+    return convertToResult(queryResult);
+  }
 
   /**
    * Follow portal toggle for the current user.
@@ -390,6 +405,24 @@ export class PortalModule {
   };
 
   /**
+   * Updates the role ordinals for a specific portal.
+   *
+   * @param {bigint} portalId - The ID of the portal.
+   * @param {[[bigint, bigint]]} roleOrdinals - An array of tuples representing the role ordinals to be updated [RoleId, Ordinal].
+   * @returns A promise that resolves to a Result containing an array of RoleView objects.
+   */
+  updateRoleOrdinals = async (
+    portalId: bigint,
+    roleOrdinals: [[bigint, bigint]],
+  ): Promise<Result<RoleView[]>> => {
+    const queryResult = await this.actor.update_portal_role_ordinals(
+      portalId,
+      roleOrdinals,
+    );
+    return convertToResult(queryResult);
+  };
+
+  /**
    * Retrieves the portal content for a given slug (name) and query.
    *
    * @param {string} slug - The slug of the portal.
@@ -412,4 +445,37 @@ export class PortalModule {
     const queryResult = await this.actor.get_self_portals();
     return convertToSuccessResult(queryResult);
   };
+
+  /**
+   * Finds a portal based on the provided search query.
+   * 
+   * @param {PortalSearchQuery} query - The search query to filter the portals.
+   * @returns {Promise<Result<PortalSearchResult>>} A promise that resolves to a Result containing the search result.
+   */
+  findPortal = async (query: PortalSearchQuery): Promise<Result<PortalSearchResult>> => {
+    const queryResult = await this.actor.search_portals(query);
+    return convertToResult(queryResult);
+  }
+
+  /**
+   * Sets the status of a member in a portal.
+   * 
+   * @param {bigint} portalId - The ID of the portal.
+   * @param {bigint} memberId - The ID of the member.
+   * @param {MemberKind} status - The status to set for the member.
+   * @param {string} reason - The reason for setting the status.
+   * @returns A promise that resolves to a Result containing the updated MemberListItemView if successful, or an error Result if the member is not found.
+   */
+  setMemberStatus = async (
+    portalId: bigint,
+    memberId: bigint,
+    status: MemberKind,
+    reason: string,
+  ): Promise<Result<MemberListItemView>> => {
+    const queryResult = await this.actor.set_portal_members_status(portalId, memberId, status, reason);
+    if(queryResult.length === 0) {
+      return convertToErrorResult<MemberListItemView>('Member not found', { NotFound: 'Member not found' }, [{ field: 'memberId', errors: ['Member not found'] }]);
+    }
+    return convertToSuccessResult<MemberListItemView>(queryResult[0]);
+  }
 }
