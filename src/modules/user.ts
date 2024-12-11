@@ -32,6 +32,16 @@ export class UserModule {
   };
 
   /**
+   * Retrieves the self principal.
+   *
+   * @returns {Promise<Result<Principal>>} A promise that resolves to a Result containing the self principal.
+   */
+  getSelfPrincipal = async (): Promise<Result<Principal>> => {
+    const queryResult = await this.actor.get_own_id();
+    return convertToSuccessResult<Principal>(queryResult);
+  };
+
+  /**
    * Retrieves the portals associated with a user.
    *
    * @param {Principal} userId - The ID of the user.
@@ -77,13 +87,13 @@ export class UserModule {
   /**
    * Retrieves a user by their principal.
    *
-   * @param principal - The principal of the user.
+   * @param {Principal} userId - The principal of the user.
    * @returns {Promise<Result<UserView>>} - A promise that resolves to the user view.
    */
   getUserByPrincipal = async (
-    principal: Principal,
+    userId: Principal,
   ): Promise<Result<UserView>> => {
-    const queryResult = await this.actor.get_user_by_principal(principal);
+    const queryResult = await this.actor.get_user_by_principal(userId);
     return convertToResult<UserView>(queryResult);
   };
 
@@ -121,15 +131,26 @@ export class UserModule {
   };
 
   /**
+   * Toggle the follow status of a user.
+   *
+   * @param {Principal} userId - The ID of the user to follow.
+   * @returns {Promise<Result<UserView>>} A promise that resolves to the result of the follow operation.
+   */
+  followUserToggle = async (userId: Principal): Promise<Result<UserView>> => {
+    const queryResult = await this.actor.follow_user_toggle(userId);
+    return convertToResult(queryResult);
+  };
+
+  /**
    * Retrieves a list of blocked users.
    *
-   * @param {UserListPaged} page - The pagination information for the user list.
+   * @param {UserListPaged} query - The pagination information for the user list.
    * @returns {Promise<Result<UserFollowPaged>>} A promise that resolves to the success result of the query.
    */
   getBlockedUsers = async (
-    page: UserListPaged,
+    query: UserListPaged,
   ): Promise<Result<UserFollowPaged>> => {
-    const queryResult = await this.actor.get_user_blocked(page);
+    const queryResult = await this.actor.get_user_blocked(query);
     return convertToSuccessResult(queryResult);
   };
 
@@ -137,36 +158,36 @@ export class UserModule {
    * Retrieves the followers of a user.
    *
    * @param {string} username - The username of the user.
-   * @param {UserListPaged} page - The pagination information for the list of followers.
+   * @param {UserListPaged} query - The pagination information for the list of followers.
    * @returns {Promise<Result<UserFollowPaged>>} A promise that resolves to the success result of the query.
    */
   getUserFollowers = async (
     username: string,
-    page: UserListPaged,
+    query: UserListPaged,
   ): Promise<Result<UserFollowPaged>> => {
-    const queryResult = await this.actor.get_user_followers(username, page);
+    const queryResult = await this.actor.get_user_followers(username, query);
     return convertToSuccessResult(queryResult);
   };
 
   /**
    * Retrieves the list of users that the specified user is following.
    *
-   * @param username - The username of the user.
-   * @param page - The pagination information for the user list.
+   * @param {string} username - The username of the user.
+   * @param {UserListPaged} query - The pagination information for the user list.
    * @returns {Promise<Result<UserFollowPaged>>} A promise that resolves to the list of users the specified user is following.
    */
   getUserFollowing = async (
     username: string,
-    page: UserListPaged,
+    query: UserListPaged,
   ): Promise<Result<UserFollowPaged>> => {
-    const queryResult = await this.actor.get_user_following(username, page);
+    const queryResult = await this.actor.get_user_following(username, query);
     return convertToSuccessResult(queryResult);
   };
 
   /**
    * Updates the user's bio.
    *
-   * @param bio - The new bio for the user.
+   * @param {string} bio - The new bio for the user.
    * @returns {Promise<Result<UserSelfView>>} A promise that resolves to the result of the update operation.
    */
   updateBio = async (bio: string): Promise<Result<UserSelfView>> => {
@@ -185,7 +206,7 @@ export class UserModule {
   /**
    * Updates the avatar of the user.
    *
-   * @param avatarUri - The URI of the new avatar image. If not provided, the avatar will be removed.
+   * @param {string | undefined} avatarUri - The URI of the new avatar image. If not provided, the avatar will be removed.
    * @returns {Promise<Result<UserSelfView>>} A promise that resolves to the result of the update operation.
    */
   updateAvatar = async (avatarUri?: string): Promise<Result<UserSelfView>> => {
@@ -206,7 +227,7 @@ export class UserModule {
   /**
    * Updates the cover photo of the user.
    *
-   * @param coverPhotoUri - The URI of the cover photo. If provided, the cover photo will be updated with the new URI. If not provided, the cover photo will be removed.
+   * @param {string | undefined} coverPhotoUri - The URI of the cover photo. If provided, the cover photo will be updated with the new URI. If not provided, the cover photo will be removed.
    * @returns {Promise<Result<UserSelfView>>} A promise that resolves to the result of the update operation.
    */
   updateCoverPhoto = async (
@@ -221,7 +242,7 @@ export class UserModule {
   /**
    * Updates the social links of the user.
    *
-   * @param socialLinks - An array of social profiles containing the updated social links.
+   * @param {SocialProfile[]} socialLinks - An array of social profiles containing the updated social links.
    * @returns {Promise<Result<UserSelfView>>} A promise that resolves to the result of the update operation.
    */
   updateSocialLinks = async (
@@ -232,7 +253,7 @@ export class UserModule {
   };
 
   /**
-   * Updates the username of the user.
+   * Updates the username of the user. Cost 50 DSCVR Points
    *
    * @param {string} username - The new username.
    * @returns {Promise<Result<UserSelfView>>} A promise that resolves to the result of the update operation.
@@ -245,11 +266,30 @@ export class UserModule {
   /**
    * Checks if a user is following another user.
    *
-   * @param userId - The ID of the user to check if they are being followed.
+   * @param {Principal} userId - The ID of the user to check if they are being followed.
    * @returns {Promise<Result<boolean>>}  A promise that resolves to a success result indicating if the user is following or not.
    */
   isUserFollowing = async (userId: Principal): Promise<Result<boolean>> => {
     const queryResult = await this.actor.is_user_following(userId);
     return convertToSuccessResult(queryResult);
   };
+
+  /**
+   * Toggles the block status of a user.
+   * 
+   * @param {Principal} userId - The ID of the user to toggle the block status for.
+   * @returns {Promise<Result<boolean>>} A promise that resolves to a Result<boolean> indicating the success of the operation.
+   */
+  blockUserToggle = async (userId: Principal): Promise<Result<boolean>> => {
+    const queryResult = await this.actor.block_user_toggle(userId);
+    if (queryResult.length === 0) {
+      return convertToErrorResult<boolean>(
+        'User not found',
+        { NotFound: 'User not found' },
+        [{ field: 'userId', errors: ['User not found'] }],
+      );
+    }
+    return convertToSuccessResult(queryResult[0]);
+  };
+
 }

@@ -1,9 +1,7 @@
 import { Identity } from '@dfinity/agent';
 import { getBackendActor } from './actor';
 import type { _SERVICE as BackendActor } from './idl/dscvr.did';
-import { UserModule } from './modules/user';
-import { ContentModule } from './modules/content';
-import { PortalModule } from './modules/portal';
+import { ContentModule, PortalModule, UserModule } from './modules';
 
 /**
  * Represents the DSCVRProtocol class.
@@ -22,7 +20,7 @@ export class DSCVRProtocol {
    * Represents the content module.
    */
   public content: ContentModule;
-  
+
   /**
    * Represents the portal module.
    */

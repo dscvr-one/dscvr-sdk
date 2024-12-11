@@ -10,11 +10,16 @@ The DSCVR SDK is a TypeScript library designed to facilitate interactions with t
 - Search
 - Feeds
 
-
-
 ## Installation
 
+
+```bash
+pnpm install @dscvr/dscvr-sdk
+```
+or
 ```bash
 npm install @dscvr/dscvr-sdk
 ```
 
+
+## Examples

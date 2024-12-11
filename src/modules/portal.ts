@@ -1,10 +1,13 @@
 import { Principal } from '@dfinity/principal';
 import {
   _SERVICE as BackendActor,
+  ContentViewPage,
   CreatePortal,
   CreatePortalRole,
   GetPortalMemberV2Result,
+  MemberListItemView,
   MemberView,
+  PagedQuery,
   PortalInfo,
   PortalMemberQuery,
   PortalMemberView,
@@ -21,9 +24,11 @@ import {
 } from '../utils';
 import { Result } from '../types';
 
+/**
+ * Represents a module for interacting with portals.
+ */
 export class PortalModule {
   constructor(public actor: BackendActor) {}
-
 
   /**
    * Retrieves a portal view based on the provided portal slug.
@@ -142,7 +147,7 @@ export class PortalModule {
 
   /**
    * Joins a portal with the specified portal ID.
-   * 
+   *
    * @param {bigint} portalId - The ID of the portal to join.
    * @returns {Promise<Result<PortalView>>} A promise that resolves to a Result containing the PortalView.
    */
@@ -159,6 +164,19 @@ export class PortalModule {
    */
   leavePortal = async (portalId: bigint): Promise<Result<PortalView>> => {
     const queryResult = await this.actor.leave_portal(portalId);
+    return convertToResult(queryResult);
+  };
+
+  /**
+   * Follow portal toggle for the current user.
+   *
+   * @param {bigint} portalId - The ID of the portal to leave.
+   * @returns {Promise<Result<PortalView>>} A promise that resolves to a Result containing the PortalView.
+   */
+  followPortalToggle = async (
+    portalId: bigint,
+  ): Promise<Result<PortalView>> => {
+    const queryResult = await this.actor.follow_portal_toggle(portalId);
     return convertToResult(queryResult);
   };
 
@@ -227,7 +245,7 @@ export class PortalModule {
 
   /**
    * Retrieves the roles of a user in a portal.
-   * 
+   *
    * @param {bigint} portalId - The ID of the portal.
    * @param {Principal} userId - The ID of the user.
    * @returns {Promise<Result<PortalMemberView>>} A promise that resolves to a Result containing the PortalMemberView if successful, or an error if the user is not found.
@@ -269,7 +287,7 @@ export class PortalModule {
 
   /**
    * Adds a role to a member in a portal.
-   * 
+   *
    * @param {bigint} portalId - The ID of the portal.
    * @param {bigint} memberId - The ID of the member.
    * @param {bigint} roleId - The ID of the role.
@@ -303,7 +321,7 @@ export class PortalModule {
 
   /**
    * Removes a role from a member in a portal.
-   * 
+   *
    * @param {bigint} portalId - The ID of the portal.
    * @param {bigint} memberId - The ID of the member.
    * @param {bigint} roleId - The ID of the role to be removed.
@@ -335,6 +353,63 @@ export class PortalModule {
       portalId,
       memberRoles,
     );
+    return convertToSuccessResult(queryResult);
+  };
+
+  /**
+   * Retrieves the members of a role.
+   *
+   * @param roleId - The ID of the role.
+   * @returns {Promise<Result<MemberListItemView[]>>} A promise that resolves to a Result containing an array of MemberListItemView objects.
+   */
+  getRoleMembers = async (
+    roleId: bigint,
+  ): Promise<Result<MemberListItemView[]>> => {
+    const queryResult = await this.actor.get_role_members(roleId);
+    return convertToSuccessResult(queryResult);
+  };
+
+  /**
+   * Retrieves the assignable roles for a given member.
+   *
+   * @param {bigint} memberId - The ID of the member.
+   * @returns {Promise<Result<[MemberView, RoleView[]]>>} A promise that resolves to a tuple containing the member view and an array of role views.
+   */
+  getMemberAssignableRoles = async (
+    memberId: bigint,
+  ): Promise<Result<[MemberView, RoleView[]]>> => {
+    const queryResult = await this.actor.get_assignable_portal_roles(memberId);
+    if (queryResult.length === 0) {
+      return convertToErrorResult<[MemberView, RoleView[]]>(
+        'Member not found',
+        { NotFound: 'Member not found' },
+        [{ field: 'memberId', errors: ['Member not found'] }],
+      );
+    }
+    return convertToSuccessResult<[MemberView, RoleView[]]>(queryResult[0]);
+  };
+
+  /**
+   * Retrieves the portal content for a given slug (name) and query.
+   *
+   * @param {string} slug - The slug of the portal.
+   * @param {PagedQuery} query - The query parameters for pagination.
+   * @returns {Promise<Result<ContentViewPage>>} A promise that resolves to a Result containing the ContentViewPage.
+   */
+  getPortalContent = async (
+    slug: string,
+    query: PagedQuery,
+  ): Promise<Result<ContentViewPage>> => {
+    const queryResult = await this.actor.get_portal_content(slug, query);
+    return convertToResult(queryResult);
+  };
+
+  /**
+   * Retrieves the users own portals.
+   * @returns {Promise<Result<PortalView[]>>} A promise that resolves to a Result containing an array of PortalView objects.
+   */
+  getSelfPortals = async (): Promise<Result<PortalView[]>> => {
+    const queryResult = await this.actor.get_self_portals();
     return convertToSuccessResult(queryResult);
   };
 }

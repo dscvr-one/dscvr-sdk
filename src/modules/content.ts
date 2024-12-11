@@ -1,11 +1,17 @@
 import {
   _SERVICE as BackendActor,
+  ContentQuery,
   ContentReaction,
+  ContentTreeViewPage,
   ContentView,
   CreateContent,
 } from '../idl/dscvr.did';
 import { Reaction, Result } from '../types';
-import { convertToResult } from '../utils';
+import {
+  convertToErrorResult,
+  convertToResult,
+  convertToSuccessResult,
+} from '../utils';
 
 /**
  * Represents a module for managing content.
@@ -15,7 +21,7 @@ export class ContentModule {
 
   /**
    * Retrieves the content with the specified content ID.
-   * 
+   *
    * @param {bigint} contetId - The ID of the content to retrieve.
    * @returns {Promise<Result<ContentView>>} A promise that resolves to a Result containing the ContentView.
    */
@@ -78,7 +84,7 @@ export class ContentModule {
 
   /**
    * Pins or unpins the content with the specified contentId.
-   * 
+   *
    * @param {bigint} contentId - The ID of the content to be pinned or unpinned.
    * @param {boolean} isPinned - A boolean indicating whether the content should be pinned or unpinned.
    * @returns {Promise<Result<ContentView>>} A Promise that resolves to a Result containing the pinned or unpinned ContentView.
@@ -93,7 +99,7 @@ export class ContentModule {
 
   /**
    * Sets the NSFW (Not Safe for Work) flag for a specific content.
-   * 
+   *
    * @param {bigint} contentId - The ID of the content.
    * @param {boolean} isNSFW - A boolean indicating whether the content is NSFW.
    * @returns {Promise<Result<ContentView>>} A Promise that resolves to a Result containing the updated ContentView.
@@ -108,7 +114,7 @@ export class ContentModule {
 
   /**
    * Reacts to a content by providing a reaction.
-   * 
+   *
    * @param {bigint} contentId - The ID of the content to react to.
    * @param {Reaction} reaction - The reaction to be applied to the content (optional).
    * @returns {Promise<Result<ContentView>>} A promise that resolves to a Result containing the updated ContentView.
@@ -122,5 +128,33 @@ export class ContentModule {
       reaction ? [{ [reaction]: null } as ContentReaction] : [],
     );
     return convertToResult(queryResult);
+  };
+
+  /**
+   * Retrieves the children of a content item based on the provided query.
+   *
+   * @param {ContentQuery} query - The query parameters for fetching the content children.
+   * @returns {Promise<Result<ContentTreeViewPage>>} A promise that resolves to a Result containing the content tree view page.
+   */
+  getContentChildren = async (
+    query: ContentQuery,
+  ): Promise<Result<ContentTreeViewPage>> => {
+    const queryResult = await this.actor.get_content_children_page(query);
+    if ('Err' in queryResult) {
+      return convertToErrorResult<ContentTreeViewPage>(
+        'Error fetching content children',
+        queryResult.Err.length > 0
+          ? queryResult.Err[0]
+          : { NotFound: 'Content not found' },
+        [],
+      );
+    } else if ('Ok' in queryResult) {
+      return convertToSuccessResult<ContentTreeViewPage>(queryResult.Ok);
+    }
+    return convertToErrorResult<ContentTreeViewPage>(
+      'Error fetching content children',
+      { NotFound: 'Content not found' },
+      [],
+    )
   };
 }
