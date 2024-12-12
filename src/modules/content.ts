@@ -81,6 +81,45 @@ export class ContentModule {
   };
 
   /**
+   * Creates a post to your profile with a poll.
+   * 
+   * @param body - The body of the post.
+   * @param pollDays - The number of days the poll will be active.
+   * @param pollChoices - The choices for the poll.
+   * @param isNSFW - Indicates if the post is NSFW (Not Safe for Work).
+   * @param tags - Optional tags for the post.
+   * @param isHTML - Indicates if the body is in HTML format.
+   * @returns A Promise that resolves to a Result containing the created ContentView.
+   */
+  createSelfPostWithPoll = async (
+    body: string,
+    pollDays: bigint,
+    pollChoices: string[],
+    isNSFW: boolean = false,
+    tags?: string[],
+    isHTML: boolean = false,
+  ): Promise<Result<ContentView>> => {
+    return await this.createContent({
+      url: '',
+      is_nsfw: isNSFW,
+      title: '',
+      portal_id: [],
+      disable_comments: [false],
+      body: isHTML ? `${HTML_PREFIX}${body}` : body,
+      lang: 'api',
+      poll: [{
+        days: pollDays,
+        kind:  { 'Traditional' : null },
+        choices: pollChoices
+      }],
+      tags: tags || [],
+      content_type: 'post',
+      parent_id: [],
+      icon_url: '',
+    });
+  }
+
+  /**
    * Creates a post in the specified portal.
    *
    * @param portalId - The ID of the portal where the post will be created.
