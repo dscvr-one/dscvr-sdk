@@ -24,7 +24,7 @@ export function convertToResult<T>(
     error_code?: [] | [SocietyRsError];
   }
 ): Result<T> {
-  const isSuccess = response.status === "success";
+  const isSuccess = response.status === SuccessStatus;
   const data = response.result.length > 0 ? response.result[0] : undefined;
   const validationErrors = response.errors?.[0] || [];
   const code = response.error_code?.[0];
