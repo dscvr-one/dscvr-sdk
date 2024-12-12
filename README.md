@@ -25,6 +25,8 @@ npm install @dscvr-one/dscvr-sdk
 
 ### Create Identity
 
+Use the output Principal from this script and set it in your DSCVR profile.
+
 ```ts
 import { Ed25519KeyIdentity } from '@dscvr-one/dscvr-sdk';
 import fs from 'fs';
