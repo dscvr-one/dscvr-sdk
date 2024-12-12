@@ -77,31 +77,33 @@ const main = async () => {
   }
 
   //Update avatar
-  let setAvatar = await protocol.user.updateAvatar(
+  let setAvatarResult = await protocol.user.updateAvatar(
     "https://i.ibb.co/nPDRY9q/avatar.png"
   );
-  if (setAvatar.type === "success") {
+  if (setAvatarResult.type === "success") {
     console.log("Avatar updated");
   } else {
-    console.error("Error updating avatar:", setAvatar.error);
+    console.error("Error updating avatar:", setAvatarResult.error);
   }
 
   //Update cover photo
-  let setCoverPhoto = await protocol.user.updateCoverPhoto(
+  let setCoverPhotoResult = await protocol.user.updateCoverPhoto(
     "https://i.ibb.co/zPGTXDG/cover-photo.png"
   );
-  if (setCoverPhoto.type === "success") {
+  if (setCoverPhotoResult.type === "success") {
     console.log("Cover photo updated");
   } else {
-    console.error("Error updating cover photo:", setCoverPhoto.error);
+    console.error("Error updating cover photo:", setCoverPhotoResult.error);
   }
 
   //Update bio
-  let setBio = await protocol.user.updateBio("Hello, I'm using the DSCVR SDK!");
-  if (setBio.type === "success") {
+  let setBioResult = await protocol.user.updateBio(
+    "Hello, I'm using the DSCVR SDK!"
+  );
+  if (setBioResult.type === "success") {
     console.log("Bio updated");
   } else {
-    console.error("Error updating bio:", setBio.error);
+    console.error("Error updating bio:", setBioResult.error);
   }
 };
 
