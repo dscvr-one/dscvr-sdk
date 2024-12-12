@@ -16,6 +16,9 @@ import {
   convertToSuccessResult,
 } from '../utils';
 
+
+export const HTML_PREFIX = '‰HTML';
+
 /**
  * Represents a module for managing content.
  */
@@ -44,6 +47,101 @@ export class ContentModule {
   ): Promise<Result<ContentView>> => {
     const queryResult = await this.actor.create_content(content);
     return convertToResult(queryResult);
+  };
+
+  /**
+   * Creates a post to your profile.
+   *
+   * @param body - The content of the post.
+   * @param isNSFW - Indicates whether the post is NSFW (Not Safe for Work). Default value is false.
+   * @param tags - An optional array of tags associated with the post.
+   * @param isHTML - Indicates whether the post is in HTML format. Default value is false.
+   * @returns A promise that resolves to a Result object containing the created ContentView.
+   */
+  createSelfPost = async (
+    body: string,
+    isNSFW: boolean = false,
+    tags?: string[],
+    isHTML: boolean = false,
+  ): Promise<Result<ContentView>> => {
+    return await this.createContent({
+      url: '',
+      is_nsfw: isNSFW,
+      title: '',
+      portal_id: [],
+      disable_comments: [false],
+      body: isHTML ? `${HTML_PREFIX}${body}` : body,
+      lang: 'api',
+      poll: [],
+      tags: tags || [],
+      content_type: 'post',
+      parent_id: [],
+      icon_url: '',
+    });
+  };
+
+  /**
+   * Creates a post in the specified portal.
+   *
+   * @param portalId - The ID of the portal where the post will be created.
+   * @param body - The content of the post.
+   * @param isNSFW - Indicates whether the post is NSFW (Not Safe for Work). Default value is false.
+   * @param tags - An optional array of tags associated with the post.
+   * @param isHTML - Indicates whether the post is in HTML format. Default value is false.
+   * @returns A promise that resolves to a Result object containing the created ContentView.
+   */
+  createPost = async (
+    portalId: bigint,
+    body: string,
+    isNSFW: boolean = false,
+    tags?: string[],
+    isHTML: boolean = false,
+  ): Promise<Result<ContentView>> => {
+    return await this.createContent({
+      url: '',
+      is_nsfw: isNSFW,
+      title: '',
+      portal_id: [portalId],
+      disable_comments: [false],
+      body: isHTML ? `${HTML_PREFIX}${body}` : body,
+      lang: 'api',
+      poll: [],
+      tags: tags || [],
+      content_type: 'post',
+      parent_id: [],
+      icon_url: '',
+    });
+  };
+
+  /**
+   * Creates a comment for a parent content.
+   *
+   * @param parentContentId - The ID of the parent content.
+   * @param body - The body of the comment.
+   * @param isNSFW - Indicates if the comment is NSFW (Not Safe for Work). Default is false.
+   * @param tags - Optional tags for the comment.
+   * @returns A Promise that resolves to a Result containing the created ContentView.
+   */
+  createComment = async (
+    parentContentId: bigint,
+    body: string,
+    isNSFW: boolean = false,
+    tags?: string[],
+  ): Promise<Result<ContentView>> => {
+    return await this.createContent({
+      url: '',
+      is_nsfw: isNSFW,
+      title: '',
+      portal_id: [],
+      disable_comments: [false],
+      body: body,
+      lang: 'api',
+      poll: [],
+      tags: tags || [],
+      content_type: 'comment',
+      parent_id: [parentContentId],
+      icon_url: '',
+    });
   };
 
   /**
@@ -158,12 +256,12 @@ export class ContentModule {
       'Error fetching content children',
       { NotFound: 'Content not found' },
       [],
-    )
+    );
   };
 
   /**
    * Retrieves the user's content based on the provided username and query parameters.
-   * 
+   *
    * @param {string} username - The username of the user whose content is being retrieved.
    * @param {PagedQuery} query - The query parameters for pagination and filtering.
    * @returns {Promise<Result<ContentViewPage>>} A promise that resolves to a Result object containing the user's content.
@@ -175,7 +273,6 @@ export class ContentModule {
     const queryResult = await this.actor.get_user_content(username, query);
     return convertToResult(queryResult);
   };
-
 
   /**
    * Casts a vote on a poll.
@@ -189,7 +286,7 @@ export class ContentModule {
     choiceId: bigint,
   ): Promise<Result<PollView>> => {
     const queryResult = await this.actor.content_poll_vote(contentId, choiceId);
-    if(queryResult.length == 0) {
+    if (queryResult.length == 0) {
       return convertToErrorResult<PollView>(
         'Error voting on poll',
         { NotFound: 'Content not found or choice not found' },
@@ -197,5 +294,5 @@ export class ContentModule {
       );
     }
     return convertToSuccessResult<PollView>(queryResult[0]);
-  }
+  };
 }
