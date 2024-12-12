@@ -7,6 +7,7 @@ The DSCVR SDK is a TypeScript library designed to facilitate interactions with t
 - Users
 - Content
 - Portals
+- Feeds
 
 ## Installation
 
@@ -49,6 +50,63 @@ Identity created: 24xqa-heqzm-pc6yh-cn2kz-635nr-yxgk2-55x6a-5srrd-a4mom-ea4jf-fa
 Identity loaded: 24xqa-heqzm-pc6yh-cn2kz-635nr-yxgk2-55x6a-5srrd-a4mom-ea4jf-fae
 ```
 
+### Get and Update the User
+
+```ts
+import { Ed25519KeyIdentity, DSCVRProtocol } from "@dscvr-one/dscvr-sdk";
+import fs from "fs";
+
+const main = async () => {
+  //Load the identity from the file
+  let identity = Ed25519KeyIdentity.fromJSON(
+    fs.readFileSync("./.keys/dscvr-identity.json").toString()
+  );
+  console.log("Identity loaded:", identity.getPrincipal().toString());
+
+  //Create a new DSCVRProtocol instance with the loaded identity
+  let protocol = new DSCVRProtocol(identity);
+
+  //Get self
+  let selfResult = await protocol.user.getSelf();
+
+  if (selfResult.type === "success") {
+    let user = selfResult.data;
+    console.log("User:", user);
+  } else {
+    console.error("Error creating post:", selfResult.error);
+  }
+
+  //Update avatar
+  let setAvatar = await protocol.user.updateAvatar(
+    "https://i.ibb.co/nPDRY9q/avatar.png"
+  );
+  if (setAvatar.type === "success") {
+    console.log("Avatar updated");
+  } else {
+    console.error("Error updating avatar:", setAvatar.error);
+  }
+
+  //Update cover photo
+  let setCoverPhoto = await protocol.user.updateCoverPhoto(
+    "https://i.ibb.co/zPGTXDG/cover-photo.png"
+  );
+  if (setCoverPhoto.type === "success") {
+    console.log("Cover photo updated");
+  } else {
+    console.error("Error updating cover photo:", setCoverPhoto.error);
+  }
+
+  //Update bio
+  let setBio = await protocol.user.updateBio("Hello, I'm using the DSCVR SDK!");
+  if (setBio.type === "success") {
+    console.log("Bio updated");
+  } else {
+    console.error("Error updating bio:", setBio.error);
+  }
+};
+
+main();
+```
 
 ### Create Post
 
