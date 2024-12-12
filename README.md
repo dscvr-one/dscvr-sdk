@@ -216,7 +216,7 @@ Portal URL: https://dscvr.one/p/dscvr-sdk-test
 ```
 
 
-### Update Portal
+### Update Portal and Get Permissions/Roles
 
 ```ts
 import { Ed25519KeyIdentity, DSCVRProtocol, PermissionBuilder } from "@dscvr-one/dscvr-sdk";
@@ -276,6 +276,119 @@ const main = async () => {
     } else {
         console.error("Error getting portal:", portalResult.error);
     }
+};
+
+main();
+```
+
+
+### Create and assign Portal Role
+
+```ts
+import {
+  Ed25519KeyIdentity,
+  DSCVRProtocol,
+  PermissionFlags,
+  ROLE_COLORS,
+} from "@dscvr-one/dscvr-sdk";
+import fs from "fs";
+
+const main = async () => {
+  //Load the identity from the file
+  let identity = Ed25519KeyIdentity.fromJSON(
+    fs.readFileSync("./.keys/dscvr-identity.json").toString()
+  );
+  console.log("Identity loaded:", identity.getPrincipal().toString());
+
+  //Create a new DSCVRProtocol instance with the loaded identity
+  let protocol = new DSCVRProtocol(identity);
+
+  //role name
+  const roleName = "Test Role";
+
+  //Get Portal
+  let portalResult = await protocol.portal.getPortal("dscvr-sdk-test");
+  if (portalResult.type === "success") {
+    let portal = portalResult.data;
+    console.log("Portal:", portal);
+
+    //Get all roles
+    let rolesResult = await protocol.portal.getPortalRoles(portal.id);
+    let testRole = null;
+    if (rolesResult.type === "success") {
+      let roles = rolesResult.data;
+      console.log("Roles:", roles);
+      testRole = roles.find((role) => role.name === roleName);
+    } else {
+      console.error("Error getting portal roles:", rolesResult.error);
+    }
+
+    if (!testRole) {
+      //Use OR operator to combine permission flags
+      let permissionFlag =
+        PermissionFlags.CREATE_CONTENT_COMMENT |
+        PermissionFlags.CREATE_CONTENT_POST |
+        PermissionFlags.REACT_CONTENT;
+
+      let createRoleResult = await protocol.portal.addPortalRole(portal.id, {
+        permissions: BigInt(permissionFlag),
+        name: roleName,
+        color: ROLE_COLORS["Amber Blaze"], //you can use any color techincally, but this is what DSCVR supports
+        ordinal: 1n,
+        icon_url: "", //not used
+      });
+
+      if (createRoleResult.type === "success") {
+        testRole = createRoleResult.data;
+        console.log("Role created:", testRole);
+      } else {
+        console.error("Error creating role:", createRoleResult.error);
+      }
+    }
+
+    if (testRole) {
+      //Get user member Roles
+      let userMemberResult = await protocol.portal.getUserPortalRoles(
+        portal.id,
+        identity.getPrincipal()
+      );
+      if (userMemberResult.type === "success") {
+        const portalMember = userMemberResult.data;
+
+        //Add the user to the role, if the user has the role it will not be added again but will return the existing roles
+        let addRoleResult = await protocol.portal.addMemberRole(
+          portal.id,
+          portalMember.member.id,
+          testRole.id
+        );
+        if (addRoleResult.type === "success") {
+          let memberViews = addRoleResult.data;
+          if (memberViews.length > 0) {
+            let hasRole = memberViews[0].roles.find(
+              (role) => role.id === testRole.id
+            );
+            if (hasRole) {
+              console.log("User has role:", hasRole);
+            } else {
+              console.error("User does not have role:", testRole);
+            }
+          } else {
+            console.error("User not found?");
+          }
+          console.log("Role added to user", addRoleResult.data);
+        } else {
+          console.error("Error adding role to user:", addRoleResult.error);
+        }
+      } else {
+        console.error(
+          "Error getting user portal roles:",
+          userMemberResult.error
+        );
+      }
+    }
+  } else {
+    console.error("Error getting portal:", portalResult.error);
+  }
 };
 
 main();

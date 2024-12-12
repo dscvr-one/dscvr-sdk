@@ -170,7 +170,6 @@ import {
     }
   }
   
-  export const computePermissions = (permissions: Permission[]): bigint => {
-    const builder = new PermissionBuilder(permissions);
-    return BigInt(builder.compute());
+  export const computePermissionFlag = (flags: number[]): bigint => {
+    return BigInt(flags.reduce((x, y) => x | y));
   };
