@@ -80,3 +80,10 @@ const main = async () => {
 
 main();
 ```
+
+Example Output
+```bash
+Identity loaded: bug6q-2lwju-tkuip-d76yw-e4zbg-bxt3q-msuuo-c4zso-fgolg-hz4y5-aqe
+Post created: 1201410873629868033n
+Post URL: https://dscvr.one/post/1201410873629868033
+```
