@@ -237,14 +237,14 @@ export class ContentModule {
   updateContent = async (
     contentId: bigint,
     body: string,
-    tags: string[],
-    disable_comments: boolean,
-    isNSFW: boolean,
+    tags?: string[],
+    disable_comments: boolean = false,
+    isNSFW: boolean = false,
   ): Promise<Result<ContentView>> => {
     const queryResult = await this.actor.update_content(
       contentId,
       body,
-      tags,
+      tags || [],
       [disable_comments],
       [isNSFW],
       [],

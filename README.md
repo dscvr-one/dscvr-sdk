@@ -4,9 +4,9 @@ The DSCVR SDK is a TypeScript library designed to facilitate interactions with t
 
 ## Features
 
-- Users
-- Content
-- Portals
+- Users - Create, Read, Update, Delete
+- Content - Create, Read, Update, Delete
+- Portals - Create, Read, Update, Manage Roles
 - Feeds
 
 ## Installation
@@ -112,7 +112,7 @@ const main = async () => {
 main();
 ```
 
-### Create Post
+### Create Post, Get Post, and Edit Post
 
 ```ts
 import { Ed25519KeyIdentity, DSCVRProtocol } from "@dscvr-one/dscvr-sdk";
@@ -135,6 +135,25 @@ const main = async () => {
     let post = postResult.data;
     console.log("Post created:", post.id);
     console.log("Post URL:", `https://dscvr.one/post/${post.id}`);
+
+    let getContentResult = await protocol.content.getContent(post.id);
+    if (getContentResult.type === "success") {
+      let content = getContentResult.data;
+      console.log("Content:", content);
+    } else {
+      console.error("Error getting content:", getContentResult.error);
+    }
+
+    //Update the post
+    let updatePostResult = await protocol.content.updateContent(
+      post.id,
+      "Hello, DSCVR! Updated"
+    );
+    if (updatePostResult.type === "success") {
+      console.log("Post updated");
+    } else {
+      console.error("Error updating post:", updatePostResult.error);
+    }
   } else {
     console.error("Error creating post:", postResult.error);
   }
@@ -148,4 +167,6 @@ Example Output
 Identity loaded: bug6q-2lwju-tkuip-d76yw-e4zbg-bxt3q-msuuo-c4zso-fgolg-hz4y5-aqe
 Post created: 1201410873629868033n
 Post URL: https://dscvr.one/post/1201410873629868033
+Content: {...}
+Post updated
 ```
