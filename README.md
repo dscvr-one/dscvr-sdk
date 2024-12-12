@@ -136,6 +136,7 @@ const main = async () => {
     console.log("Post created:", post.id);
     console.log("Post URL:", `https://dscvr.one/post/${post.id}`);
 
+    //Get the post
     let getContentResult = await protocol.content.getContent(post.id);
     if (getContentResult.type === "success") {
       let content = getContentResult.data;
@@ -169,4 +170,113 @@ Post created: 1201410873629868033n
 Post URL: https://dscvr.one/post/1201410873629868033
 Content: {...}
 Post updated
+```
+
+### Create Portal
+```ts
+import { Ed25519KeyIdentity, DSCVRProtocol } from "@dscvr-one/dscvr-sdk";
+import fs from "fs";
+
+const main = async () => {
+  //Load the identity from the file
+  let identity = Ed25519KeyIdentity.fromJSON(
+    fs.readFileSync("./.keys/dscvr-identity.json").toString()
+  );
+  console.log("Identity loaded:", identity.getPrincipal().toString());
+
+  //Create a new DSCVRProtocol instance with the loaded identity
+  let protocol = new DSCVRProtocol(identity);
+
+  //Create Portal: cost 500 DSCVR Points
+  let portalCreateResult = await protocol.portal.createPortal({
+    is_nsfw: false,
+    name: "DSCVR SDK Test",
+    slug: "dscvr-sdk-test",
+    description: "This is a test portal created using the DSCVR SDK",
+    icon_url: "https://i.ibb.co/MhkCV6z/portal-example.png",
+  });
+
+  if (portalCreateResult.type === "success") {
+    let portal = portalCreateResult.data;
+    console.log("Portal created:", portal.id);
+    console.log("Portal URL:", `https://dscvr.one/p/${portal.slug}`);
+  } else {
+    console.error("Error creating portal:", portalCreateResult.error);
+  }
+};
+
+main();
+```
+
+Example Output
+```bash
+Identity loaded: bug6q-2lwju-tkuip-d76yw-e4zbg-bxt3q-msuuo-c4zso-fgolg-hz4y5-aqe
+Portal created: 11289821n
+Portal URL: https://dscvr.one/p/dscvr-sdk-test
+```
+
+
+### Update Portal
+
+```ts
+import { Ed25519KeyIdentity, DSCVRProtocol, PermissionBuilder } from "@dscvr-one/dscvr-sdk";
+import fs from "fs";
+
+const main = async () => {
+  //Load the identity from the file
+  let identity = Ed25519KeyIdentity.fromJSON(
+    fs.readFileSync("./.keys/dscvr-identity.json").toString()
+  );
+  console.log("Identity loaded:", identity.getPrincipal().toString());
+
+  //Create a new DSCVRProtocol instance with the loaded identity
+  let protocol = new DSCVRProtocol(identity);
+
+  //Get Portal
+    let portalResult = await protocol.portal.getPortal("dscvr-sdk-test");
+    if (portalResult.type === "success") {
+        let portal = portalResult.data;
+        console.log("Portal:", portal);
+
+        let isPortalMemberResult = await protocol.portal.isUserPortalMember(portal.id, identity.getPrincipal());
+        if (isPortalMemberResult.type === "success") {
+            let isMember = isPortalMemberResult.data;
+            console.log("Is Portal Member:", isMember);
+        } else {
+            console.error("Error checking if user is portal member:", isPortalMemberResult.error);
+        }
+
+        let getMemberRoleResult = await protocol.portal.getUserPortalRoles(portal.id, identity.getPrincipal());
+        if (getMemberRoleResult.type === "success") {
+            const portalMember = getMemberRoleResult.data;
+            const userPermissions = PermissionBuilder.getFromValue(Number(portalMember.portal.perm));
+            console.log("Member Permissions:", userPermissions);
+            console.log("Member Roles:", portalMember);
+        } else {
+            console.error("Error getting user portal roles:", getMemberRoleResult.error);
+        }
+
+        //Update Portal Cover Photo
+        let updatePortalResult = await protocol.portal.updatePortalCoverPhoto(portal.id, "https://i.ibb.co/m5840kL/portal-cover.png");
+        if (updatePortalResult.type === "success") {
+            console.log("Portal cover photo updated");
+        } else {
+            console.error("Error updating portal cover photo:", updatePortalResult.error);
+        }
+
+        //Get Portal Roles
+        let memberRolesResult = await protocol.portal.getPortalRoles(portal.id);
+        if (memberRolesResult.type === "success") {
+            let memberRoles = memberRolesResult.data;
+            console.log("Member Roles:", memberRoles);
+        } else {
+            console.error("Error getting portal member roles:", memberRolesResult.error);
+        }
+
+    } else {
+        console.error("Error getting portal:", portalResult.error);
+    }
+};
+
+main();
 ```

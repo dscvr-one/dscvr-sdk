@@ -1,6 +1,7 @@
 export * from './idl/dscvr.did.ts';
 export * from './dscvr';
 export * from './modules';
+export * from './permissions.ts';
 export { Reaction, ErrorResult, Success, Failure, Result } from './types';
 export * from './utils';
 
