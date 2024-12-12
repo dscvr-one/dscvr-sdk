@@ -92,9 +92,7 @@ export class UserModule {
    * @param {Principal} userId - The principal of the user.
    * @returns {Promise<Result<UserView>>} - A promise that resolves to the user view.
    */
-  getUserByPrincipal = async (
-    userId: Principal,
-  ): Promise<Result<UserView>> => {
+  getUserByPrincipal = async (userId: Principal): Promise<Result<UserView>> => {
     const queryResult = await this.actor.get_user_by_principal(userId);
     return convertToResult<UserView>(queryResult);
   };
@@ -278,7 +276,7 @@ export class UserModule {
 
   /**
    * Toggles the block status of a user.
-   * 
+   *
    * @param {Principal} userId - The ID of the user to toggle the block status for.
    * @returns {Promise<Result<boolean>>} A promise that resolves to a Result<boolean> indicating the success of the operation.
    */
@@ -296,12 +294,37 @@ export class UserModule {
 
   /**
    * Finds a user based on the provided search query.
-   * 
+   *
    * @param {UserSearchQuery} query - The search query used to find the user.
    * @returns {Promise<Result<UserSearchResult>>} A promise that resolves to a Result containing the search result.
    */
-  findUser = async (query: UserSearchQuery): Promise<Result<UserSearchResult>> => {
+  findUser = async (
+    query: UserSearchQuery,
+  ): Promise<Result<UserSearchResult>> => {
     const queryResult = await this.actor.search_users(query);
     return convertToResult(queryResult);
-  }
+  };
+
+  /**
+   * Finds a user by their username.
+   * 
+   * @param {string} username - The username of the user to find.
+   * @param {bigint} pageSize - The number of results to return per page.
+   * @param {bigint} page - The page number of the results to return.
+   * @returns {Promise<Result<UserSearchResult>>} A promise that resolves to a Result containing the UserSearchResult.
+   */
+  findUserByUsername = async (
+    username: string,
+    pageSize: bigint,
+    page: bigint,
+  ): Promise<Result<UserSearchResult>> => {
+    return this.findUser({
+      sort_by: [{ Levenshtein: null }],
+      page_size: pageSize,
+      page: page,
+      query: username,
+      chain_filter: [],
+      sort_direction: [{ Ascending: null }],
+    });
+  };
 }

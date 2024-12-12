@@ -1,7 +1,7 @@
 import { Identity } from '@dfinity/agent';
 import { getBackendActor } from './actor';
 import type { _SERVICE as BackendActor } from './idl/dscvr.did';
-import { ContentModule, PortalModule, UserModule } from './modules';
+import { ContentModule, FeedModule, PortalModule, UserModule } from './modules';
 
 /**
  * Represents the DSCVRProtocol class.
@@ -26,6 +26,11 @@ export class DSCVRProtocol {
    */
   public portal: PortalModule;
 
+  /**
+   * Represents the feed module.
+   */
+  public feed: FeedModule;
+
   constructor(
     identity: Identity,
     canisterId: string = 'h2bch-3yaaa-aaaab-qaama-cai',
@@ -40,5 +45,6 @@ export class DSCVRProtocol {
     this.user = new UserModule(this.actor);
     this.content = new ContentModule(this.actor);
     this.portal = new PortalModule(this.actor);
+    this.feed = new FeedModule(this.actor);
   }
 }

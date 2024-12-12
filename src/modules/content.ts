@@ -7,6 +7,7 @@ import {
   ContentViewPage,
   CreateContent,
   PagedQuery,
+  PollView,
 } from '../idl/dscvr.did';
 import { Reaction, Result } from '../types';
 import {
@@ -174,4 +175,27 @@ export class ContentModule {
     const queryResult = await this.actor.get_user_content(username, query);
     return convertToResult(queryResult);
   };
+
+
+  /**
+   * Casts a vote on a poll.
+   *
+   * @param {bigint} contentId - The ID of the content.
+   * @param {bigint} choiceId - The ID of the choice.
+   * @returns {Promise<Result<PollView>>} A promise that resolves to the result of the vote.
+   */
+  pollVote = async (
+    contentId: bigint,
+    choiceId: bigint,
+  ): Promise<Result<PollView>> => {
+    const queryResult = await this.actor.content_poll_vote(contentId, choiceId);
+    if(queryResult.length == 0) {
+      return convertToErrorResult<PollView>(
+        'Error voting on poll',
+        { NotFound: 'Content not found or choice not found' },
+        [],
+      );
+    }
+    return convertToSuccessResult<PollView>(queryResult[0]);
+  }
 }
