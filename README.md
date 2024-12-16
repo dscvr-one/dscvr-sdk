@@ -333,7 +333,7 @@ const main = async () => {
       let createRoleResult = await protocol.portal.addPortalRole(portal.id, {
         permissions: BigInt(permissionFlag),
         name: roleName,
-        color: ROLE_COLORS["Amber Blaze"], //you can use any color techincally, but this is what DSCVR supports
+        color: ROLE_COLORS["Amber Blaze"], //you can use any color techincally, but this is a list of supported colors by DSCVR
         ordinal: 1n,
         icon_url: "", //not used
       });
@@ -393,3 +393,14 @@ const main = async () => {
 
 main();
 ```
+
+
+## Contributing
+Contributions are welcome! If you find any issues or have suggestions for improvement, feel free to open an issue or submit a pull request.
+
+## License
+This project is licensed under the MIT License.
+
+## Acknowledgements
+Special thanks to the DSCVR team for their support and the community for their valuable feedback.
+
