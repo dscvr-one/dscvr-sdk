@@ -159,17 +159,6 @@ export const idlFactory = ({ IDL }) => {
     'user_id' : IDL.Principal,
     'roles' : IDL.Vec(RoleView),
   });
-  const UserPlatformPairKind = IDL.Variant({
-    'Discord' : IDL.Null,
-    'OpenChat' : IDL.Null,
-    'Telegram' : IDL.Null,
-    'Twitter' : IDL.Null,
-  });
-  const UserPlatformController = IDL.Record({
-    'kind' : UserPlatformPairKind,
-    'created_at' : IDL.Nat64,
-    'controller_id' : IDL.Principal,
-  });
   const CreatePortalRole = IDL.Record({
     'permissions' : IDL.Nat64,
     'name' : IDL.Text,
@@ -340,6 +329,12 @@ export const idlFactory = ({ IDL }) => {
     'content_type' : IDL.Text,
     'parent_id' : IDL.Opt(IDL.Nat64),
     'icon_url' : IDL.Text,
+  });
+  const UserPlatformPairKind = IDL.Variant({
+    'Discord' : IDL.Null,
+    'OpenChat' : IDL.Null,
+    'Telegram' : IDL.Null,
+    'Twitter' : IDL.Null,
   });
   const UserPlatformPair = IDL.Record({
     'id' : IDL.Nat64,
@@ -909,10 +904,6 @@ export const idlFactory = ({ IDL }) => {
     'parameters' : PersonalizedFeedV1Parameters,
     'query' : PagedQuery,
   });
-  const PortalMemberAddResult = IDL.Variant({
-    'Ok' : MemberListItemView,
-    'Err' : IDL.Text,
-  });
   const ReverseContentActionResult = IDL.Variant({
     'Ok' : ContentActionView,
     'Err' : IDL.Opt(SocietyRsError),
@@ -974,6 +965,15 @@ export const idlFactory = ({ IDL }) => {
     'errors' : IDL.Opt(IDL.Vec(ValidationErrors)),
     'message' : IDL.Text,
   });
+  const NFTConversionError = IDL.Variant({
+    'MissingChainType' : IDL.Null,
+    'InvalidChainType' : IDL.Text,
+    'MissingMetaType' : IDL.Null,
+  });
+  const MultiChainUpdateResponse = IDL.Variant({
+    'Ok' : IDL.Null,
+    'Err' : NFTConversionError,
+  });
   const ReportView = IDL.Record({
     'id' : IDL.Nat64,
     'read_at' : IDL.Nat64,
@@ -997,15 +997,6 @@ export const idlFactory = ({ IDL }) => {
     'errors' : IDL.Opt(IDL.Vec(ValidationErrors)),
     'message' : IDL.Text,
     'error_code' : IDL.Opt(SocietyRsError),
-  });
-  const NFTConversionError = IDL.Variant({
-    'MissingChainType' : IDL.Null,
-    'InvalidChainType' : IDL.Text,
-    'MissingMetaType' : IDL.Null,
-  });
-  const MultiChainUpdateResponse = IDL.Variant({
-    'Ok' : IDL.Null,
-    'Err' : NFTConversionError,
   });
   const UpdatePoll = IDL.Record({
     'days' : IDL.Nat64,
@@ -1090,11 +1081,6 @@ export const idlFactory = ({ IDL }) => {
     'add_member_role' : IDL.Func(
         [IDL.Nat64, IDL.Vec(IDL.Tuple(IDL.Nat64, IDL.Nat64))],
         [IDL.Vec(MemberView)],
-        ['query'],
-      ),
-    'add_platform_controller' : IDL.Func(
-        [UserPlatformPairKind, IDL.Principal],
-        [IDL.Vec(UserPlatformController)],
         ['query'],
       ),
     'add_portal_role' : IDL.Func(
@@ -1186,11 +1172,6 @@ export const idlFactory = ({ IDL }) => {
         [ContentTreeViewPageResult],
         ['query'],
       ),
-    'get_content_since' : IDL.Func(
-        [IDL.Nat64, IDL.Nat64],
-        [IDL.Vec(ContentTreeView)],
-        ['query'],
-      ),
     'get_content_view_counts' : IDL.Func(
         [IDL.Vec(IDL.Nat64)],
         [IDL.Vec(IDL.Tuple(IDL.Nat64, IDL.Nat64))],
@@ -1228,11 +1209,6 @@ export const idlFactory = ({ IDL }) => {
         ['query'],
       ),
     'get_paired_wallets' : IDL.Func([], [IDL.Vec(UserWallet)], ['query']),
-    'get_platform_controllers' : IDL.Func(
-        [],
-        [IDL.Vec(UserPlatformController)],
-        ['query'],
-      ),
     'get_platform_pair_code' : IDL.Func(
         [UserPlatformPairKind],
         [IDL.Opt(IDL.Text)],
@@ -1393,16 +1369,6 @@ export const idlFactory = ({ IDL }) => {
         [EmptyResult],
         ['query'],
       ),
-    'portal_member_add' : IDL.Func(
-        [IDL.Nat64, IDL.Principal],
-        [PortalMemberAddResult],
-        ['query'],
-      ),
-    'portal_nsfw_toggle' : IDL.Func(
-        [IDL.Nat64],
-        [ActionResultPortal],
-        ['query'],
-      ),
     'portal_requires_phone' : IDL.Func(
         [IDL.Nat64, IDL.Bool],
         [ActionResultPortal],
@@ -1429,7 +1395,6 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Vec(MemberView)],
         ['query'],
       ),
-    'remove_portal' : IDL.Func([IDL.Nat64], [], ['query']),
     'reverse_content_action' : IDL.Func(
         [IDL.Nat64],
         [ReverseContentActionResult],
@@ -1449,11 +1414,6 @@ export const idlFactory = ({ IDL }) => {
     'search_users' : IDL.Func(
         [UserSearchQuery],
         [ActionResultUserSearch],
-        ['query'],
-      ),
-    'set_action' : IDL.Func(
-        [IDL.Nat64, IDL.Text],
-        [ActionResultReport],
         ['query'],
       ),
     'set_nft_pfps' : IDL.Func(

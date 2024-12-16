@@ -1020,9 +1020,6 @@ service : {
   add_member_role : (nat64, vec record { nat64; nat64 }) -> (
       vec MemberView,
     ) query;
-  add_platform_controller : (UserPlatformPairKind, principal) -> (
-      vec UserPlatformController,
-    ) query;
   add_portal_role : (nat64, CreatePortalRole) -> (ActionResultPortalRole) query;
   approve_all_pending_posts : (nat64) -> (EmptySocietyRsResult) query;
   approve_deny_pending_post : (nat64, opt PostQueueAction) -> (
@@ -1054,7 +1051,6 @@ service : {
   get_content_children_page : (ContentQuery) -> (
       ContentTreeViewPageResult,
     ) query;
-  get_content_since : (nat64, nat64) -> (vec ContentTreeView) query;
   get_content_view_counts : (vec nat64) -> (vec record { nat64; nat64 }) query;
   get_identity_for_principal : (principal) -> (opt Identity) query;
   get_nft_pfps : (opt bool, opt NFTChainType) -> (vec MultiChainUpdate) query;
@@ -1066,7 +1062,6 @@ service : {
       vec UserPlatformPairListItem,
     ) query;
   get_paired_wallets : () -> (vec UserWallet) query;
-  get_platform_controllers : () -> (vec UserPlatformController) query;
   get_platform_pair_code : (UserPlatformPairKind) -> (opt text) query;
   get_portal : (text) -> (ActionResultPortal) query;
   get_portal_content : (text, PagedQuery) -> (
@@ -1124,8 +1119,6 @@ service : {
       variant { Ok : ContentViewPage; Err : text },
     ) query;
   pin_user_content : (nat64, bool) -> (EmptyResult) query;
-  portal_member_add : (nat64, principal) -> (PortalMemberAddResult) query;
-  portal_nsfw_toggle : (nat64) -> (ActionResultPortal) query;
   portal_requires_phone : (nat64, bool) -> (ActionResultPortal) query;
   react_to_content : (nat64, opt ContentReaction) -> (
       ActionResultContent,
@@ -1136,13 +1129,11 @@ service : {
   remove_member_role : (nat64, vec record { nat64; nat64 }) -> (
       vec MemberView,
     ) query;
-  remove_portal : (nat64) -> () query;
   reverse_content_action : (nat64) -> (ReverseContentActionResult) query;
   reverse_portal_content_action : (nat64) -> (EmptyResult) query;
   search_portals : (PortalSearchQuery) -> (ActionResultPortalSearch) query;
   search_tags : (text) -> (vec Tag) query;
   search_users : (UserSearchQuery) -> (ActionResultUserSearch) query;
-  set_action : (nat64, text) -> (ActionResultReport) query;
   set_nft_pfps : (vec MultiChainUpdate) -> (MultiChainUpdateResponse) query;
   set_portal_members_status : (nat64, nat64, MemberKind, text) -> (
       opt MemberListItemView,

@@ -1040,10 +1040,6 @@ export interface _SERVICE {
     [bigint, Array<[bigint, bigint]>],
     Array<MemberView>
   >,
-  'add_platform_controller' : ActorMethod<
-    [UserPlatformPairKind, Principal],
-    Array<UserPlatformController>
-  >,
   'add_portal_role' : ActorMethod<
     [bigint, CreatePortalRole],
     ActionResultPortalRole
@@ -1083,7 +1079,6 @@ export interface _SERVICE {
     [ContentQuery],
     ContentTreeViewPageResult
   >,
-  'get_content_since' : ActorMethod<[bigint, bigint], Array<ContentTreeView>>,
   'get_content_view_counts' : ActorMethod<
     [BigUint64Array | bigint[]],
     Array<[bigint, bigint]>
@@ -1108,7 +1103,6 @@ export interface _SERVICE {
     Array<UserPlatformPairListItem>
   >,
   'get_paired_wallets' : ActorMethod<[], Array<UserWallet>>,
-  'get_platform_controllers' : ActorMethod<[], Array<UserPlatformController>>,
   'get_platform_pair_code' : ActorMethod<[UserPlatformPairKind], [] | [string]>,
   'get_portal' : ActorMethod<[string], ActionResultPortal>,
   'get_portal_content' : ActorMethod<
@@ -1194,8 +1188,6 @@ export interface _SERVICE {
       { 'Err' : string }
   >,
   'pin_user_content' : ActorMethod<[bigint, boolean], EmptyResult>,
-  'portal_member_add' : ActorMethod<[bigint, Principal], PortalMemberAddResult>,
-  'portal_nsfw_toggle' : ActorMethod<[bigint], ActionResultPortal>,
   'portal_requires_phone' : ActorMethod<[bigint, boolean], ActionResultPortal>,
   'react_to_content' : ActorMethod<
     [bigint, [] | [ContentReaction]],
@@ -1211,13 +1203,11 @@ export interface _SERVICE {
     [bigint, Array<[bigint, bigint]>],
     Array<MemberView>
   >,
-  'remove_portal' : ActorMethod<[bigint], undefined>,
   'reverse_content_action' : ActorMethod<[bigint], ReverseContentActionResult>,
   'reverse_portal_content_action' : ActorMethod<[bigint], EmptyResult>,
   'search_portals' : ActorMethod<[PortalSearchQuery], ActionResultPortalSearch>,
   'search_tags' : ActorMethod<[string], Array<Tag>>,
   'search_users' : ActorMethod<[UserSearchQuery], ActionResultUserSearch>,
-  'set_action' : ActorMethod<[bigint, string], ActionResultReport>,
   'set_nft_pfps' : ActorMethod<
     [Array<MultiChainUpdate>],
     MultiChainUpdateResponse
