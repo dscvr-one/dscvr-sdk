@@ -326,9 +326,9 @@ const main = async () => {
     if (!testRole) {
       //Use OR operator to combine permission flags
       let permissionFlag =
-        PermissionFlags.CREATE_CONTENT_COMMENT |
-        PermissionFlags.CREATE_CONTENT_POST |
-        PermissionFlags.REACT_CONTENT;
+        PermissionFlags.CREATE_CONTENT_COMMENT | //allows a user to comment
+        PermissionFlags.CREATE_CONTENT_POST | //allows a user to post
+        PermissionFlags.REACT_CONTENT; //allows a user to react
 
       let createRoleResult = await protocol.portal.addPortalRole(portal.id, {
         permissions: BigInt(permissionFlag),
