@@ -33,7 +33,7 @@ Use the output Principal from this script and set it in your DSCVR profile.
 
 3. Scroll to bottom
 4. Set your DSCVR Principal
-
+![Integrations](assets/integrations.png "Integrations")
 
 
 ```ts
