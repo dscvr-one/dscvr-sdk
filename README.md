@@ -27,6 +27,15 @@ npm install @dscvr-one/dscvr-sdk
 
 Use the output Principal from this script and set it in your DSCVR profile.
 
+1. Goto your user profile settings
+![Profile Settings](assets/settings.png "Profile Settings")
+2. Click `integrations`
+
+3. Scroll to bottom
+4. Set your DSCVR Principal
+
+
+
 ```ts
 import { Ed25519KeyIdentity } from '@dscvr-one/dscvr-sdk';
 import fs from 'fs';

@@ -11,7 +11,7 @@
     "prepare": "pnpm build",
     "generate": "npx tsx ./src/generate.ts"
   },
-  "keywords": [],
+  "keywords": ["dscvr", "sdk", "dscvr-sdk"],
   "author": "",
   "license": "ISC",
   "devDependencies": {
