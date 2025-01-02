@@ -28,12 +28,16 @@ npm install @dscvr-one/dscvr-sdk
 Use the output Principal from this script and set it in your DSCVR profile.
 
 1. Goto your user profile settings
-![Profile Settings](assets/settings.png "Profile Settings")
+
+![Profile Settings](assets/settings.png)
+
 2. Click `integrations`
 
 3. Scroll to bottom
+
 4. Set your DSCVR Principal
-![Integrations](assets/integrations.png "Integrations")
+
+![Integrations](assets/integrations.png)
 
 
 ```ts
