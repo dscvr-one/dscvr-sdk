@@ -1,0 +1,45 @@
+# Node.js
+node_modules/
+
+# pnpm
+.pnpm-debug.log*
+.pnpm-store/
+
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Temporary files
+*.tmp
+*.swp
+
+# Build artifacts
+build/
+out/
+coverage/
+
+# IDEs and editors
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+scripts/
+
+assets/
+examples/
+src/
+tsconfig.json

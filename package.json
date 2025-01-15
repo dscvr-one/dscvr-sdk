@@ -1,8 +1,9 @@
 {
   "name": "@dscvr-one/dscvr-sdk",
-  "version": "1.0.0",
+  "version": "1.0.5",
   "description": "",
-  "main": "src/index.ts",
+  "main": "dist/index.js", 
+  "types": "dist/index.d.ts", 
   "scripts": {
     "build": "tsup",
     "lint": "eslint 'src/**/*.{ts,js}'",
